@@ -28,7 +28,7 @@ import {db} from '../firebase'
 
 
 export default {
-  name: 'newGame',
+  name: 'create',
   data: function() {
     return {
       playerName: ''

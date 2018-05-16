@@ -1,10 +1,13 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import './firebase'
 import Vue from 'vue'
 import Vuex from 'vuex';
 import App from './App'
+import VueFire from 'vuefire'
+
+import './firebase'
 import router from './router'
+
 import { store } from './store/store'
 
 import VueMaterial from 'vue-material'
@@ -13,7 +16,7 @@ import { MdButton, MdContent, MdTabs, MdField} from 'vue-material/dist/component
 import 'vue-material/dist/theme/default-dark.css'
 import 'vue-material/dist/vue-material.min.css'
 
-import VueFire from 'vuefire'
+
 
 Vue.use(MdButton)
 Vue.use(MdContent)
@@ -33,7 +36,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   store: store,
-  router,
-  components: { App },
-  template: '<App/>'
+  router: router,
+  render: h => h(App)
 })

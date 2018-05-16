@@ -3,39 +3,52 @@
     <div class="title-menu">
       <h1>The<br>Life Counter</h1>
       <nav>
-          <router-link to="/play"  v-on:click.native="startGame">create game</router-link>
-          <a href="#">join game</a>
+          <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
+          <a @click="joinning=true">join game</a>
+
+          <div class=""  v-if="joinning">
+            <md-field>
+              <label>Game ID</label>
+              <md-input v-model="gameID"></md-input>
+              <md-button><router-link to="/remote"  v-on:click.native="joinGame(gameID)">join game</router-link> </md-button>
+            </md-field>
+          </div>
+
       </nav>
     </div>
   </div>
 </template>
 <script>
 import {db} from '../firebase'
-import {games} from '../firebase'
+import {game} from '../firebase'
 import {gameDefaults} from '../defaults'
 
 export default {
   name: 'splashscreen',
   data: function(){
-    return { }
+    return {
+      joinning: false,
+      gameID: ''
+     }
   },
   methods: {
     startGame: function() {
-
-        const newGameID = games.push().key;
-        console.log(newGameID)
-        // window.location.hash = 'play#' + newGameID;
+      console.log(game)
+        const newGameID = db.ref('games/').push().key;
         db.ref('games/' + newGameID ).set(gameDefaults);
         const gameInfo = {id: newGameID }
-        console.log(gameInfo)
-        console.log("startgame")
+        console.log(newGameID)
         this.$store.dispatch('changeGame', gameInfo);
+    },
+    joinGame: function(gameID){
+      const gameInfo = {id: gameID }
+      this.$store.dispatch('changeGame', gameInfo);
     }
   }
 }
 </script>
 
-<style scooped lang="scss">
+<style scoped lang="scss">
 .title-screen{
   background-color: rgba(96,145,129,1);
   height: 100vh;

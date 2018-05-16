@@ -1,5 +1,6 @@
 import {initializeApp} from 'firebase';
 
+
 const app = initializeApp({
   apiKey: "AIzaSyB4WwScU_lBz82nPq7SdebPt5PMoRwGhfI",
   authDomain: "lifecounter-9aad3.firebaseapp.com",
@@ -10,4 +11,3 @@ const app = initializeApp({
 })
 
 export const db = app.database();
-export const games = db.ref('games');
