@@ -8,16 +8,16 @@
       <ul class="player-list">
         <li v-for="player of playerList" v-bind:key="player['.key']" >{{player.name}}</li>
       </ul>
-      <md-field>
-        <label id="playername">Player Name</label>
-        <md-input v-model="playerName"></md-input>
+      <div class="input-field">
+        <!-- <label id="playername">Player Name</label> -->
+        <input v-model="playerName" placeholder="player name"></input>
         <md-button class="" @click="addPlayer">add</md-button>
-      </md-field>
+      </div>
     </div>
 
     <nav>
-      <router-link to="/">Back</router-link>
-      <router-link to="/scoreboard">Start Game</router-link>
+      <router-link class="back-button" to="/">Back</router-link>
+      <router-link class="start-game-button" to="/scoreboard">Start</router-link>
     </nav>
 
 
@@ -72,6 +72,13 @@ export default {
       right: 0;
       display: flex;
       justify-content: space-around;
+      .back-button, .start-game-button{
+        color:#00897B;
+        text-transform: lowercase;
+        font-size: 3em;
+        line-height: 1em;
+      }
+
     }
     h1,h2{
 
@@ -122,14 +129,31 @@ export default {
       font-weight: 100;
       color: rgba(255,255,255,1);
     }
-    .md-field{
-      margin-top: 2em;
-
-      &:after{
-        height: 0;
-        right:15%;
+    .input-field{
+      width: 100%;
+      margin: 12px auto;
+      display: flex;
+      align-items: center;
+      input{
+        background-color: rgba(0,0,0,0);
+        padding: 0;
+        margin: 0;
+        border: none;
+        outline: none;
+        text-align: left;
+        width: 100%;
+        color: white;
+        font-size: 1.5em;
       }
-    }
+        label{
+          right: 20px;
+          text-align: right;
+        }
+        &:after{
+          height: 0;
+          right:15%;
+        }
+      }
   }
 }
 
@@ -146,6 +170,8 @@ export default {
       }
   }
   .fade-in-leave-active {
+    position: absolute;
+    top: 0;
     animation: fade-in ease-in-out 2.5s reverse;
     a{
       opacity: 0;

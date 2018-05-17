@@ -10,15 +10,15 @@ export default {
 }
 </script>
 
-<style >
+<style>
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   position: fixed;
   overflow: hidden;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   background-color: #373b41;
 }
 #app ul {
@@ -31,5 +31,6 @@ export default {
 a:hover {
   text-decoration: none !important;
 }
+
 
 </style>

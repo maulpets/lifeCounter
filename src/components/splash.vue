@@ -1,5 +1,5 @@
 
-<template lang="html">
+<template>
 <transition name="slide">
   <div class="title-screen">
     <div class="title-menu">
@@ -9,17 +9,22 @@
 
           <transition name="slide-up">
           <div class="join-game"  v-if="joinning">
-            <md-field>
-              <label>Game ID</label>
-              <md-input v-model="gameID"></md-input>
-            </md-field>
-            <div class="join-game-button">
-              <router-link to="/remote"  v-on:click.native="joinGame(gameID)"><md-icon>send</md-icon></router-link>
+            <div class="input-field">
+              <!-- <label>Game ID</label> -->
+              <input v-model="gameID" placeholder="enter game id"></input>
             </div>
+            <div @click="enterGameID" class="close-join-game">
+              <md-icon>close</md-icon>
+            </div>
+            <!-- <div class="join-game-button">
+              <router-link to="/remote"  v-on:click.native="joinGame(gameID)"><md-icon>send</md-icon></router-link>
+            </div> -->
           </div>
           </transition>
-
-        <a @click="joinning = !joinning">join game</a>
+          <transition name="fade-in">
+          <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
+          </transition>
+        <a @click="enterGameID" >join game</a>
       </nav>
     </div>
   </div>
@@ -34,6 +39,7 @@ export default {
   data: function(){
     return {
       joinning: false,
+      joinLabel: 'joing game',
       gameID: ''
      }
   },
@@ -47,6 +53,10 @@ export default {
     joinGame: function(gameKey){
       const gameInfo = {id: gameKey }
       this.$store.dispatch('changeGame', gameInfo);
+    },
+    enterGameID: function (){
+      this.$data.joinning = !this.$data.joinning;
+      this.$data.gameID = '';
     }
   }
 }
@@ -56,8 +66,8 @@ export default {
 
 .title-screen{
   background-color: #282a2e;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   z-index: 1000;
   .title-menu{
@@ -89,19 +99,37 @@ export default {
         width: 100%;
         text-align: right;
         padding: 4vh 1em;
-        background-color: rgba(255,255,255,.025);
+        background-color: rgba(55, 59, 65, 1);
         z-index: 5;
+      }
+      .connect-to-game{
+        position: absolute;
+        bottom: 0;
+
       }
       .join-game{
         height: 85px;
         z-index: 1 !important;
-        background-color: rgba(255,255,255,.025);
+        background-color:rgba(55, 59, 65, 1);
+        position: relative;
         a{
-            background-color: rgba(255,255,255,.0);
+            background-color:rgba(55, 59, 65, 1);
         }
-        .md-field{
-          max-width: 60%;
+        .input-field{
+          width: 100%;
           margin: 12px auto;
+          input{
+            background-color: inherit;
+            padding: 0;
+            margin: 0;
+            border: none;
+            outline: none;
+            text-align: right;
+            padding: 4vh 1em;
+            width: 100%;
+            color: white;
+
+          }
             label{
               right: 20px;
               text-align: right;
@@ -112,25 +140,42 @@ export default {
             }
           }
 
-          .join-game-button{
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            right: 0;
-            margin: 0;
+      }
+      .join-game-button{
+        z-index: 6;
+        position: fixed;
+        bottom: 0;
+        background-color:rgba(55, 59, 65, 1);
+        :hover{
+          cursor: pointer;
+        }
+        .fade-in-enter-active {
+          animation: fade-in ease-in-out 1s ;
+        }
+        .fade-in-leave-active {
+          animation: fade-in ease-in-out 1s reverse;
+        }
 
-          }
+      }
 
+      .close-join-game{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 5px;
+        i{
+          color: rgba(255,255,255,.125);
+        }
       }
       .slide-up-enter-active {
         animation: slide-up ease-in-out 1s ;
-          .md-field{
+          .input-field, .close-join-game{
             animation:  fade-in ease-in-out 1s ;
           }
       }
       .slide-up-leave-active {
         animation: slide-up ease-in-out 1s reverse;
-        .md-field{
+        .input-field, .close-join-game{
           animation: fade-in ease-in-out 1s reverse ;
 
         }
