@@ -15,6 +15,11 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  position: fixed;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  background-color: #373b41;
 }
 #app ul {
   list-style: none;
@@ -22,4 +27,9 @@ export default {
   margin: 0;
   padding: 0;
 }
+
+a:hover {
+  text-decoration: none !important;
+}
+
 </style>

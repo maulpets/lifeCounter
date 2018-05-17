@@ -13,9 +13,9 @@ import { store } from './store/store'
 import VueMaterial from 'vue-material'
 import { MdButton, MdContent, MdTabs, MdField} from 'vue-material/dist/components'
 
-import 'vue-material/dist/theme/default-dark.css'
-import 'vue-material/dist/vue-material.min.css'
 
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default-dark.css'
 
 
 Vue.use(MdButton)
