@@ -4,27 +4,38 @@
   <div class="title-screen">
     <div class="title-menu">
       <h1>The<br>Life Counter</h1>
+
       <nav>
+        <div class="" v-if="userIsLoggedIn">
+
           <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
 
           <transition name="slide-up">
-          <div class="join-game"  v-if="joinning">
-            <div class="input-field">
-              <!-- <label>Game ID</label> -->
-              <input v-model="gameID" placeholder="enter game id"></input>
+            <div class="join-game"  v-if="joinning">
+
+              <div class="input-field">
+                <input v-model="gameID" placeholder="enter game id"></input>
+              </div>
+
+              <div @click="enterGameID" class="close-join-game">
+                <md-icon>close</md-icon>
+              </div>
             </div>
-            <div @click="enterGameID" class="close-join-game">
-              <md-icon>close</md-icon>
-            </div>
-            <!-- <div class="join-game-button">
-              <router-link to="/remote"  v-on:click.native="joinGame(gameID)"><md-icon>send</md-icon></router-link>
-            </div> -->
-          </div>
           </transition>
+
           <transition name="fade-in">
-          <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
+            <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
           </transition>
-        <a @click="enterGameID" >join game</a>
+
+          <a @click="enterGameID" >join game</a>
+        </div>
+
+        <div class="" v-if="!userIsLoggedIn">
+          <router-link to="/login">login</router-link>
+          <router-link to="/signup">sign up</router-link>
+        </div>
+
+
       </nav>
     </div>
   </div>
@@ -33,9 +44,13 @@
 <script>
 import {db} from '../firebase'
 import {gameDefaults} from '../defaults'
+import signup from './signup.vue'
 
 export default {
   name: 'splashscreen',
+  components: {
+    'signup': signup
+  },
   data: function(){
     return {
       joinning: false,
@@ -43,21 +58,30 @@ export default {
       gameID: ''
      }
   },
+  computed: {
+    userIsLoggedIn (){
+      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+    },
+    userInfo (){
+      return this.$store.getters.user
+    }
+  },
   methods: {
     startGame: function() {
-        const newGameID = db.ref('games/').push().key;
+        const newGameID = Math.random().toString(36).substr(2, 5);
         db.ref('games/' + newGameID ).set(gameDefaults);
         const gameInfo = {id: newGameID }
         this.$store.dispatch('changeGame', gameInfo);
     },
-    joinGame: function(gameKey){
-      const gameInfo = {id: gameKey }
+    joinGame: function(gameID){
+      const gameInfo = {id: gameID }
       this.$store.dispatch('changeGame', gameInfo);
     },
     enterGameID: function (){
       this.$data.joinning = !this.$data.joinning;
       this.$data.gameID = '';
     }
+
   }
 }
 </script>

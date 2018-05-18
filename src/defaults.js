@@ -1,3 +1,4 @@
 export const gameDefaults = {
-              status: "setup"
+              status: "setup",
+              players: "asdas"
             }

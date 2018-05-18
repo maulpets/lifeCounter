@@ -17,8 +17,8 @@ export default {
   text-align: center;
   position: fixed;
   overflow: hidden;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   background-color: #373b41;
 }
 #app ul {
@@ -32,5 +32,12 @@ a:hover {
   text-decoration: none !important;
 }
 
+.error-wrapper{
+  position: absolute;
+  background-color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 
 </style>

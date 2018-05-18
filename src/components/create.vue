@@ -2,22 +2,32 @@
 <transition name="fade-in">
   <div class="game-setup">
     <!-- <h1>add players</h1> -->
-    <h2>Game ID<br><span id="gameID">{{gameInfo.id}}</span></h2>
-    <div class="player-list-wrapper">
+    <div class="game-id">
+      <h2>game id: <span id="gameID">{{gameInfo.id}}</span></h2>
+    </div>
+
+    <!-- <div class="player-list-wrapper">
       <h3 id="playerID">Players</h3>
       <ul class="player-list">
         <li v-for="player of playerList" v-bind:key="player['.key']" >{{player.name}}</li>
       </ul>
       <div class="input-field">
-        <!-- <label id="playername">Player Name</label> -->
         <input v-model="playerName" placeholder="player name"></input>
         <md-button class="" @click="addPlayer">add</md-button>
+      </div>
+    </div> -->
+    <div class="game-setup-wrapper">
+      <div class="game-setup-player-count">
+        <h1>players</h1>
+        <ul class="player-count-select">
+          <li v-for="option in playerCountOptions" v-bind:class="{ 'is-selected': playerCount(option) }" v-on:click="addPlayers(option)">{{option}}</li>
+        </ul>
       </div>
     </div>
 
     <nav>
       <router-link class="back-button" to="/">Back</router-link>
-      <router-link class="start-game-button" to="/scoreboard">Start</router-link>
+      <router-link class="start-game-button" to="/scoreboard">start</router-link>
     </nav>
 
 
@@ -34,7 +44,9 @@ export default {
   name: 'create',
   data: function() {
     return {
-      playerName: ''
+      playerName: '',
+      activePlayers: 0,
+      playerCountOptions: [2,3,4,5,6]
     }
   },
   firebase: function () {
@@ -48,10 +60,15 @@ export default {
     }
   },
   methods: {
-    addPlayer: function() {
+    addPlayers: function(number) {
         console.log(this.$store.state.gameInfo.id)
-          db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/' + this.playerName).set({name: this.playerName, life: 40, sideCounter1: 0, sideCounter2: 0, sideCounter3: 0});
+        this.activePlayers = number;
+        db.ref('games/'+ this.$store.state.gameInfo.id).set({activePlayers: number})
+          db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/' + this.playerName).set({name: this.playerName + number, life: 40, sideCounter1: 0, sideCounter2: 0, sideCounter3: 0});
           this.playerName = '';
+    },
+    playerCount: function(number){
+      return number == this.activePlayers
     }
   }
 }
@@ -60,7 +77,7 @@ export default {
 <style scooped lang="scss">
   .game-setup{
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     padding: 2em;
     margin: auto;
     z-index: 10;
@@ -80,33 +97,48 @@ export default {
       }
 
     }
-    h1,h2{
-
-    }
-    h2{
-      margin: 0;
-      text-align: right;
-      font-size: 5vw;
-      line-height: .5em;
+    .game-id{
       position: absolute;
-      right: 2vw;
-
-      color: rgba(255,255,255,.3);
-      span{
-        font-size: 3vw;
-        font-weight: 100;
+      left: 0;
+      top: 0;
+      display: flex;
+      padding: 0 1em;
+      h2{
+        font-weight: 200;
+        span{
+          font-weight: 400;
+        }
       }
     }
-    h1{
-      color: #282a2e;
-      font-size: 20vw;
-      line-height: .52em;
-      text-align: right;
-      bottom: 2vh;
-      margin: 0;
+    .game-setup-wrapper{
+      display: flex;
+      flex-flow: column;
+      position: relative;
+      margin: 1em 0 0 0;
+      h1{
+        color: #282a2e;
+        font-size: 15vw;
+        line-height: .52em;
+        text-align: right;
+        margin: 0 0 .5em;
+      }
+      .game-setup-player-count{
+        .player-count-select{
+          display: flex;
+          justify-content: space-around;
+          font-size: 8vw;
+          font-weight: 700;
+          color: rgba(155,157,160,1);
+          .is-selected{
+            color: white;
+          }
+        }
 
-      position: absolute;
+
+      }
     }
+
+
 
     .player-list-wrapper{
 
