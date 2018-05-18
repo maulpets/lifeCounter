@@ -1,31 +1,35 @@
 <template lang="html">
 <transition name="fade-in">
-  <div class="sign-up-page">
-    <transition name="slide-down">
+<div class="sign-up-page">
+
+  <transition name="slide-down">
     <div class="error-wrapper" v-if="error">
       <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
     </div>
   </transition>
-    <div class="sign-up-form-wrapper">
-      <h1>username</h1>
-      <form class="" action="index.html" method="post" @submit.prevent="onSignUp">
-        <md-field>
-          <label>Initial Value</label>
-          <md-input></md-input>
-        </md-field>
-        <div class="input-field">
-          <input v-model="email" id="email" placeholder="email" required></input>
-        </div>
-        <div class="input-field">
-          <input v-model="password" id="password" placeholder="password" required></input>
-        </div>
-        <div class="input-field">
-          <input v-model="confirmPassword" placeholder="confirm"></input>
-        </div>
-        <md-button class=" " type="submit"  v-bind:disabled="validatePassword">signup</md-button>
-      </form>
-    </div>
-  </div>
+
+  <v-container>
+    <v-layout row>
+      <v-flex xs12 m6>
+        <div class="sign-up-form-wrapper">
+            <h1>username</h1>
+            <form class="" action="index.html" method="post" @submit.prevent="onSignUp">
+              <div class="input-field">
+                <input v-model="email" id="email" placeholder="email" required></input>
+              </div>
+              <div class="input-field">
+                <input v-model="password" id="password" placeholder="password" required></input>
+              </div>
+              <div class="input-field">
+                <input v-model="confirmPassword" placeholder="confirm"></input>
+              </div>
+              <md-button class=" " type="submit"  v-bind:disabled="validatePassword">signup</md-button>
+            </form>
+          </div>
+       </v-flex>
+    </v-layout>
+  </v-container>
+</div>
 </transition>
 </template>
 

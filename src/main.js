@@ -13,15 +13,19 @@ import { store } from './store/store'
 import VueMaterial from 'vue-material'
 import { MdField } from 'vue-material/dist/components'
 
+import Vuetify from 'vuetify'
+
+
 import AlertCmp from './components/shared/displayError.vue'
 
 
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default-dark.css'
+import 'vuetify/dist/vuetify.min.css'
 
 
 
-
+Vue.use(Vuetify)
 Vue.use(VueMaterial)
 Vue.use(MdField)
 Vue.use(VueFire)
