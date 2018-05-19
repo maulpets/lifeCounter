@@ -13,31 +13,40 @@
         <v-flex xs8 offset-xs2  >
           <h1>username</h1>
           <v-form action="index.html" method="post" @submit.prevent="onSignUp">
-          <v-text-field
-          v-model="email"
-          class="input-field"
-          id="email"
-          label="email"
-          required>
-          </v-text-field>
 
-          <v-text-field
-          v-model="password"
-          class="input-field"
-          id="password"
-          type="password"
-          label="password"
-          required>
-          </v-text-field>
+            <v-text-field
+            v-model="username"
+            class="input-field"
+            id="username"
+            label="username"
+            required>
+            </v-text-field>
 
-          <v-text-field
-          v-model="confirmPassword"
-          class="input-field"
-          id="confirmPassword"
-          type="password"
-          label="confirm"
-          required>
-          </v-text-field>
+            <v-text-field
+            v-model="email"
+            class="input-field"
+            id="email"
+            label="email"
+            required>
+            </v-text-field>
+
+            <v-text-field
+            v-model="password"
+            class="input-field"
+            id="password"
+            type="password"
+            label="password"
+            required>
+            </v-text-field>
+
+            <v-text-field
+            v-model="confirmPassword"
+            class="input-field"
+            id="confirmPassword"
+            type="password"
+            label="confirm"
+            required>
+            </v-text-field>
 
 
           <v-btn flat type="submit" v-bind:disabled="validatePassword">login</v-btn>
@@ -49,47 +58,12 @@
 </transition>
 </template>
 
-
-<!-- <template>
-    <transition name="phade-in" mode="out-in">
-    <v-content class="sign-up-page">
-
-      <transition name="zlide-down">
-        <div class="error-wrapper" v-if="error">
-          <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-        </div>
-      </transition>
-
-      <v-container>
-        <v-layout row>
-          <v-flex xs12 m6>
-            <div class="sign-up-form-wrapper">
-                <h1>username</h1>
-                <form class="" action="index.html" method="post" @submit.prevent="onSignUp">
-                  <div class="input-field">
-                    <input v-model="email" id="email" placeholder="email" required></input>
-                  </div>
-                  <div class="input-field">
-                    <input v-model="password" id="password" placeholder="password" required></input>
-                  </div>
-                  <div class="input-field">
-                    <input v-model="confirmPassword" placeholder="confirm"></input>
-                  </div>
-                  <button class=" " type="submit"  v-bind:disabled="validatePassword">signup</button>
-                </form>
-              </div>
-           </v-flex>
-        </v-layout>
-      </v-container>
-    </v-content>
-    </transition>
-</template> -->
-
 <script>
 export default {
   name: 'signup',
   data: function () {
     return{
+      username: '',
       email: '',
       password: '',
       confirmPassword: ''
@@ -115,7 +89,7 @@ export default {
   },
   methods: {
     onSignUp () {
-      this.$store.dispatch('signUpUser', {email: this.email, password: this.password});
+      this.$store.dispatch('signUpUser', {email: this.email, password: this.password, username: this.username });
     },
     onDismissed () {
       this.$store.dispatch('clearError');

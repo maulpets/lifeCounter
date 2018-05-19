@@ -22,26 +22,25 @@
           </v-layout>
 
 
-          <v-layout row wrap v-if="userIsLoggedIn" class="game-">
 
+          <v-layout row wrap v-if="userIsLoggedIn && !hasPlayGroup" class="user-playgroup-menu">
+            <v-flex xs12 class="create-playgroup user-option">
+              <a v-on:click="createPlayGroup">create play group</a>
+              <!-- <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link> -->
+            </v-flex>
+            <v-flex xs12 class="join-playgroup user-option">
+              <router-link to="/joinPlayGroup">join play group</router-link>
+            </v-flex>
+          </v-layout>
+
+
+          <v-layout row wrap v-if="hasPlayGroup && userIsLoggedIn" class="game-">
             <v-flex xs12 class="user-create-game user-option">
               <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
             </v-flex>
-            <v-flex class="user-join-game user-option"  v-if="joinning">
-              <div class="input-field">
-                <input v-model="gameID" placeholder="enter game id"></input>
-              </div>
-
-              <div @click="enterGameID" class="close-join-game">
-                <v-icon>close</v-icon>
-              </div>
-              <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
+            <v-flex class="user-join-game user-option">
+              <router-link to="/join">join game</router-link>
             </v-flex>
-
-            <v-flex xs12 class="user-create-game user-option">
-              <a @click="enterGameID" >join game</a>
-            </v-flex>
-
           </v-layout>
 
 
@@ -53,6 +52,23 @@
   </div>
 </transition>
 </template>
+
+<!-- <v-flex class="user-join-game user-option"  v-if="joinning">
+  <div class="input-field">
+    <input v-model="gameID" placeholder="enter game id"></input>
+  </div>
+
+  <div @click="enterGameID" class="close-join-game">
+    <v-icon>close</v-icon>
+  </div>
+  <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
+</v-flex>
+
+<v-flex xs12 class="user-create-game user-option">
+  <a @click="enterGameID" >join game</a>
+</v-flex>
+ -->
+
 <script>
 import {db} from '../firebase'
 import {gameDefaults} from '../defaults'
@@ -65,9 +81,6 @@ export default {
   },
   data: function(){
     return {
-      show: true,
-      joinning: false,
-      joinLabel: 'joing game',
       gameID: ''
      }
   },
@@ -75,26 +88,27 @@ export default {
     userIsLoggedIn (){
       return this.$store.getters.user !== null && this.$store.getters.user !== undefined
     },
+    hasPlayGroup (){
+      return this.$store.getters.playgroups !== null && this.$store.getters.playgroups !== undefined
+    },
     userInfo (){
       return this.$store.getters.user
     }
   },
+  watch: {
+    hasPlayGroup (value){
+      if (value){
+        this.$router.push('/newPlayGroup')
+      }
+    }
+  },
   methods: {
     startGame: function() {
-        const newGameID = Math.random().toString(36).substr(2, 5);
-        db.ref('games/' + newGameID ).set(gameDefaults);
-        const gameInfo = {id: newGameID }
-        this.$store.dispatch('changeGame', gameInfo);
+        this.$store.dispatch('createGame');
     },
-    joinGame: function(gameID){
-      const gameInfo = {id: gameID }
-      this.$store.dispatch('changeGame', gameInfo);
-    },
-    enterGameID: function (){
-      this.$data.joinning = !this.$data.joinning;
-      this.$data.gameID = '';
+    createPlayGroup: function(){
+        this.$store.dispatch('createPlayGroup');
     }
-
   }
 }
 </script>
@@ -128,7 +142,7 @@ export default {
       .user-option{
         text-align: right;
         padding: 1em;
-        font-size: 1.8em;
+        font-size: 1.3em;
       }
     }
   }
