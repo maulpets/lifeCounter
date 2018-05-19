@@ -10,27 +10,27 @@
 
         <div class="life-counter">
           <div class="left-side-button" @click="add(player, 1, 'life')"></div>
-          <div class="left-floating-button" @click="add(player, 5, 'life')"> <md-icon>add</md-icon> </div>
+          <div class="left-floating-button" @click="add(player, 5, 'life')"> <v-icon>add</v-icon> </div>
           <div class="life-total"> {{player.life}} </div>
-          <div class="right-floating-button" @click="subtract(player, 5, 'life')"> <md-icon>remove</md-icon> </div>
+          <div class="right-floating-button" @click="subtract(player, 5, 'life')"> <v-icon>remove</v-icon> </div>
           <div class="right-side-button" @click="subtract(player, 1, 'life')"></div>
         </div>
 
         <div class="side-counter-wrapper">
           <div class="side-counter" v-bind:class="{ 'is-counting': isCounting(player, 'sideCounter1') }">
-            <div class="" @click="add(player, 1,'sideCounter1')" ><md-icon>add</md-icon></div>
+            <div class="" @click="add(player, 1,'sideCounter1')" ><v-icon>add</v-icon></div>
             <p>{{player.sideCounter1}}</p>
-            <div class="" @click="subtract(player, 1,'sideCounter1')"><md-icon>remove</md-icon></div>
+            <div class="" @click="subtract(player, 1,'sideCounter1')"><v-icon>remove</v-icon></div>
           </div>
           <div class="side-counter" v-bind:class="{ 'is-counting': isCounting(player, 'sideCounter2') }">
-              <div class="" @click="add(player, 1,'sideCounter2')"><md-icon>add</md-icon></div>
+              <div class="" @click="add(player, 1,'sideCounter2')"><v-icon>add</v-icon></div>
               <p>{{player.sideCounter2}}</p>
-              <div class="" @click="subtract(player, 1,'sideCounter2')"><md-icon>remove</md-icon></div>
+              <div class="" @click="subtract(player, 1,'sideCounter2')"><v-icon>remove</v-icon></div>
           </div>
           <div class="side-counter" v-bind:class="{ 'is-counting': isCounting(player, 'sideCounter3') }">
-            <div class="" @click="add(player, 1,'sideCounter3')"><md-icon>add</md-icon></div>
+            <div class="" @click="add(player, 1,'sideCounter3')"><v-icon>add</v-icon></div>
              <p>{{player.sideCounter3}}</p>
-            <div class="" @click="subtract(player, 1,'sideCounter3')"><md-icon>remove</md-icon></div>
+            <div class="" @click="subtract(player, 1,'sideCounter3')"><v-icon>remove</v-icon></div>
           </div>
         </div>
       </div>

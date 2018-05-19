@@ -6,11 +6,11 @@
     <ul>
       <li v-for="player of playerList" v-bind:key="player['.key']" >{{player.name}}</li>
     </ul>
-    <md-field>
+    <field>
       <label>Player Name</label>
-      <md-input v-model="playerName"></md-input>
-      <md-button class="md-raised" @click="addPlayer">add</md-button>
-    </md-field>
+      <input v-model="playerName"></input>
+      <button class="raised" @click="addPlayer">add</button>
+    </field>
 
 
     <br>

@@ -2,41 +2,53 @@
 <template>
 <transition name="slide">
   <div class="title-screen">
-    <div class="title-menu">
+    <div class="title-wrapper">
       <h1>The<br>Life Counter</h1>
 
-      <nav>
-        <div class="" v-if="userIsLoggedIn">
+      <transition name="phade" mode="in-out">
+      <div class="phade">
 
-          <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
 
-          <transition name="slide-up">
-            <div class="join-game"  v-if="joinning">
+      <v-container class="title-menu" >
 
+
+          <v-layout row wrap v-if="!userIsLoggedIn" class="user-login-menu">
+            <v-flex xs12 class="user-sign-in user-option">
+              <router-link to="/login">login</router-link>
+            </v-flex>
+            <v-flex xs12 class="user-sign-up user-option">
+              <router-link to="/signup">sign up</router-link>
+            </v-flex>
+          </v-layout>
+
+
+          <v-layout row wrap v-if="userIsLoggedIn" class="game-">
+
+            <v-flex xs12 class="user-create-game user-option">
+              <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
+            </v-flex>
+            <v-flex class="user-join-game user-option"  v-if="joinning">
               <div class="input-field">
                 <input v-model="gameID" placeholder="enter game id"></input>
               </div>
 
               <div @click="enterGameID" class="close-join-game">
-                <md-icon>close</md-icon>
+                <v-icon>close</v-icon>
               </div>
-            </div>
-          </transition>
+              <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
+            </v-flex>
 
-          <transition name="fade-in">
-            <router-link to="/remote"  style="position:absolute"v-on:click.native="joinGame(gameID)" class="join-game-button" v-if="joinning" >connect</router-link>
-          </transition>
+            <v-flex xs12 class="user-create-game user-option">
+              <a @click="enterGameID" >join game</a>
+            </v-flex>
 
-          <a @click="enterGameID" >join game</a>
-        </div>
-
-        <div class="" v-if="!userIsLoggedIn">
-          <router-link to="/login">login</router-link>
-          <router-link to="/signup">sign up</router-link>
-        </div>
+          </v-layout>
 
 
-      </nav>
+      </v-container>
+      </div>
+      </transition>
+
     </div>
   </div>
 </transition>
@@ -53,6 +65,7 @@ export default {
   },
   data: function(){
     return {
+      show: true,
       joinning: false,
       joinLabel: 'joing game',
       gameID: ''
@@ -93,8 +106,7 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  z-index: 1000;
-  .title-menu{
+  .title-wrapper{
     width: 66vw;
     height: 100vh;
     margin-left: 34vw;
@@ -109,121 +121,14 @@ export default {
       font-size: 9vw;
       opacity: .8;
     }
-    nav{
-      display: flex;
-      flex-flow:column;
-      position: relative;
-      overflow: hidden;
-      // margin-bottom: 10vh;
-      width: 100%;
-
-      a{
-        color:#00897B;
-        display: block;
-        width: 100%;
+    .title-menu{
+      display: block;
+      margin: auto 0 15vh 0;
+      flex: none;
+      .user-option{
         text-align: right;
-        padding: 4vh 1em;
-        background-color: rgba(55, 59, 65, 1);
-        z-index: 5;
-      }
-      .connect-to-game{
-        position: absolute;
-        bottom: 0;
-
-      }
-      .join-game{
-        height: 85px;
-        z-index: 1 !important;
-        background-color:rgba(55, 59, 65, 1);
-        position: relative;
-        a{
-            background-color:rgba(55, 59, 65, 1);
-        }
-        .input-field{
-          width: 100%;
-          margin: 12px auto;
-          input{
-            background-color: inherit;
-            padding: 0;
-            margin: 0;
-            border: none;
-            outline: none;
-            text-align: right;
-            padding: 4vh 1em;
-            width: 100%;
-            color: white;
-
-          }
-            label{
-              right: 20px;
-              text-align: right;
-            }
-            &:after{
-              height: 0;
-              right:15%;
-            }
-          }
-
-      }
-      .join-game-button{
-        z-index: 6;
-        position: fixed;
-        bottom: 0;
-        background-color:rgba(55, 59, 65, 1);
-        :hover{
-          cursor: pointer;
-        }
-        .fade-in-enter-active {
-          animation: fade-in ease-in-out 1s ;
-        }
-        .fade-in-leave-active {
-          animation: fade-in ease-in-out 1s reverse;
-        }
-
-      }
-
-      .close-join-game{
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 5px;
-        i{
-          color: rgba(255,255,255,.125);
-        }
-      }
-      .slide-up-enter-active {
-        animation: slide-up ease-in-out 1s ;
-          .input-field, .close-join-game{
-            animation:  fade-in ease-in-out 1s ;
-          }
-      }
-      .slide-up-leave-active {
-        animation: slide-up ease-in-out 1s reverse;
-        .input-field, .close-join-game{
-          animation: fade-in ease-in-out 1s reverse ;
-
-        }
-      }
-      @keyframes slide-up {
-        0% {
-          height: 0px;
-        }
-
-        100% {
-          height: 85px;
-        }
-      }
-      @keyframes fade-in {
-        0% {
-          opacity: 0;
-        }
-        50% {
-          opacity: 0;
-        }
-
-        100% {
-          opacity: 1;
-        }
+        padding: 1em;
+        font-size: 1.8em;
       }
     }
   }
@@ -231,16 +136,18 @@ export default {
 
 
 
+
 .slide-enter-active {
   animation: slide-in ease-in-out 1.5s ;
-    a{
-      opacity: 0;
-    }
+  .phade{
+    animation: phade-in ease-in-out 1.5s ;
+  }
+
 }
 .slide-leave-active {
   animation: slide-in ease-in-out 1.5s reverse;
-  a{
-    opacity: 0;
+  .phade{
+    animation: phade-in ease-in-out 1.5s reverse;
   }
 }
 @keyframes slide-in {
@@ -248,13 +155,24 @@ export default {
     position: absolute;
     top: 0;
     transform: translateX(-100vw);
-    z-index: 10;
+
   }
 
   100% {
     position: absolute;
     top: 0;
     transform: translateX(0vw);
+  }
+}
+@keyframes phade-in {
+  0% {
+      opacity: 0;
+  }
+  50% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
   }
 }
 

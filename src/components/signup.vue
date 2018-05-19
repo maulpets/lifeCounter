@@ -1,37 +1,89 @@
-<template lang="html">
-<transition name="fade-in">
-<div class="sign-up-page">
+<template>
+  <transition name="fade-in" mode="out-in">
+  <div class="sign-up-page">
 
-  <transition name="slide-down">
-    <div class="error-wrapper" v-if="error">
-      <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
-    </div>
-  </transition>
+    <transition name="zlide-down">
+      <div class="error-wrapper" v-if="error">
+        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+      </div>
+    </transition>
 
-  <v-container>
-    <v-layout row>
-      <v-flex xs12 m6>
-        <div class="sign-up-form-wrapper">
-            <h1>username</h1>
-            <form class="" action="index.html" method="post" @submit.prevent="onSignUp">
-              <div class="input-field">
-                <input v-model="email" id="email" placeholder="email" required></input>
-              </div>
-              <div class="input-field">
-                <input v-model="password" id="password" placeholder="password" required></input>
-              </div>
-              <div class="input-field">
-                <input v-model="confirmPassword" placeholder="confirm"></input>
-              </div>
-              <md-button class=" " type="submit"  v-bind:disabled="validatePassword">signup</md-button>
-            </form>
-          </div>
-       </v-flex>
-    </v-layout>
-  </v-container>
-</div>
+    <v-container>
+      <v-layout row wrap class="sign-up-form-wrapper">
+        <v-flex xs8 offset-xs2  >
+          <h1>username</h1>
+          <v-form action="index.html" method="post" @submit.prevent="onSignUp">
+          <v-text-field
+          v-model="email"
+          class="input-field"
+          id="email"
+          label="email"
+          required>
+          </v-text-field>
+
+          <v-text-field
+          v-model="password"
+          class="input-field"
+          id="password"
+          type="password"
+          label="password"
+          required>
+          </v-text-field>
+
+          <v-text-field
+          v-model="confirmPassword"
+          class="input-field"
+          id="confirmPassword"
+          type="password"
+          label="confirm"
+          required>
+          </v-text-field>
+
+
+          <v-btn flat type="submit" v-bind:disabled="validatePassword">login</v-btn>
+        </v-form>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
 </transition>
 </template>
+
+
+<!-- <template>
+    <transition name="phade-in" mode="out-in">
+    <v-content class="sign-up-page">
+
+      <transition name="zlide-down">
+        <div class="error-wrapper" v-if="error">
+          <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+        </div>
+      </transition>
+
+      <v-container>
+        <v-layout row>
+          <v-flex xs12 m6>
+            <div class="sign-up-form-wrapper">
+                <h1>username</h1>
+                <form class="" action="index.html" method="post" @submit.prevent="onSignUp">
+                  <div class="input-field">
+                    <input v-model="email" id="email" placeholder="email" required></input>
+                  </div>
+                  <div class="input-field">
+                    <input v-model="password" id="password" placeholder="password" required></input>
+                  </div>
+                  <div class="input-field">
+                    <input v-model="confirmPassword" placeholder="confirm"></input>
+                  </div>
+                  <button class=" " type="submit"  v-bind:disabled="validatePassword">signup</button>
+                </form>
+              </div>
+           </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+    </transition>
+</template> -->
 
 <script>
 export default {
@@ -72,37 +124,26 @@ export default {
 }
 </script>
 
-<style scooped lang="scss">
+<style scoped lang="scss">
+
+
 .sign-up-page{
-
-  .input-field{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  .error-wrapper{
+    position: absolute;
     width: 100%;
-    margin: 12px auto;
-    input{
-      background-color: inherit;
-      padding: 0;
-      margin: 0;
-      border: none;
-      outline: none;
-      text-align: right;
-      padding: 4vh 1em;
-      width: 100%;
-      color: white;
+  }
 
-    }
-      label{
-        right: 20px;
-        text-align: right;
-      }
-      &:after{
-        height: 0;
-        right:15%;
-      }
-    }
-  .slide-down-enter-active {
+  .sign-in-form-wrapper{
+    margin: auto;
+  }
+
+  .zlide-down-enter-active {
     animation: slide-down ease-in-out .5s ;
   }
-  .slide-down-leave-active {
+  .zlide-down-leave-active {
     animation: slide-down ease-in-out .5s reverse;
   }
   @keyframes slide-down {
@@ -113,13 +154,14 @@ export default {
       transform: translateY(0%);
     }
   }
-  .fade-in-enter-active {
-    animation: fade-in ease-in-out 2.5s ;
+}
+  .phade-in-enter-active {
+    animation: phade-in ease-in-out 1.5s ;
   }
-  .fade-in-leave-active {
-    animation: fade-in ease-in-out 2.5s reverse;
+  .phade-in-leave-active {
+    animation: phade-in ease-in-out 1.5s reverse;
   }
-  @keyframes fade-in {
+  @keyframes phade-in {
     0% {
       opacity: 0;
     }
@@ -130,6 +172,6 @@ export default {
       opacity: 1;
     }
   }
-}
+
 
 </style>

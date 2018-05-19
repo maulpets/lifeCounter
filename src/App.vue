@@ -1,6 +1,8 @@
 <template>
       <div id="app">
-        <router-view></router-view>
+        <v-app dark>
+          <router-view></router-view>
+        </v-app>
       </div>
 </template>
 
@@ -21,23 +23,11 @@ export default {
   width: 100vw;
   background-color: #373b41;
 }
-#app ul {
-  list-style: none;
-  text-align: left;
-  margin: 0;
-  padding: 0;
+
+
+a {
+  text-decoration: none;
 }
 
-a:hover {
-  text-decoration: none !important;
-}
-
-.error-wrapper{
-  position: absolute;
-  background-color: white;
-  top: 0;
-  left: 0;
-  right: 0;
-}
 
 </style>

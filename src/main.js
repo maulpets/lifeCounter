@@ -10,8 +10,6 @@ import router from './router'
 
 import { store } from './store/store'
 
-import VueMaterial from 'vue-material'
-import { MdField } from 'vue-material/dist/components'
 
 import Vuetify from 'vuetify'
 
@@ -19,15 +17,20 @@ import Vuetify from 'vuetify'
 import AlertCmp from './components/shared/displayError.vue'
 
 
-import 'vue-material/dist/vue-material.min.css'
-import 'vue-material/dist/theme/default-dark.css'
 import 'vuetify/dist/vuetify.min.css'
 
 
+// Helpers
+import colors from 'vuetify/es5/util/colors'
 
-Vue.use(Vuetify)
-Vue.use(VueMaterial)
-Vue.use(MdField)
+Vue.use(Vuetify, {
+  theme: {
+    primary: colors.blue.base, // #E53935
+    secondary: colors.red.lighten4, // #FFCDD2
+    accent: colors.indigo.base // #3F51B5
+  }
+})
+
 Vue.use(VueFire)
 Vue.use(Vuex)
 

@@ -1,18 +1,34 @@
-<template lang="html">
-<transition name="fade-in">
-  <div class="sign-up-page">
-    <div class="sign-up-form-wrapper">
-      <h1>username</h1>
-      <form class="" action="index.html" method="post" @submit.prevent="onLogin">
-        <div class="input-field">
-          <input v-model="email" id="email" placeholder="email" required></input>
-        </div>
-        <div class="input-field">
-          <input v-model="password" id="password" placeholder="password" required></input>
-        </div>
-        <md-button class=" " type="submit" >login</md-button>
-      </form>
-    </div>
+<template>
+  <transition name="fade-in" mode="out-in">
+  <div class="sign-in-page">
+    <v-container>
+      <v-layout row wrap class="sign-in-form-wrapper">
+        <v-flex xs8 offset-xs2  >
+          <h1>username</h1>
+          <v-form action="index.html" method="post" @submit.prevent="onLogin">
+          <v-text-field
+          v-model="email"
+          class="input-field"
+          id="email"
+          label="email"
+          required>
+          </v-text-field>
+
+          <v-text-field
+          v-model="password"
+          class="input-field"
+          id="password"
+          type="password"
+          label="password"
+          required>
+          </v-text-field>
+
+
+          <v-btn flat type="submit" >login</v-btn>
+        </v-form>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </transition>
 </template>
@@ -20,6 +36,9 @@
 <script>
 export default {
   name: 'login',
+  props:[
+
+  ],
   data: function () {
     return{
       email: '',
@@ -43,17 +62,36 @@ export default {
     onLogin () {
       this.$store.dispatch('loginUser', {email: this.email, password: this.password});
     }
+  },
+  created: function(){
+    console.log("created")
+    this.$data.show = true
+  },
+  destroyed: function(){
+    console.log("boom")
+    this.$data.show = false
   }
 }
 </script>
 
 <style scoped lang="scss">
+.sign-in-page{
+  height: 100%;
+  width: 100%;
+  display: flex;
+
+  .sign-in-form-wrapper{
+    margin: auto;
+  }
+}
+
+
 
 .fade-in-enter-active {
-  animation: fade-in ease-in-out 2.5s ;
+  animation: fade-in ease-in-out 1.5s ;
 }
 .fade-in-leave-active {
-  animation: fade-in ease-in-out 2.5s reverse;
+  animation: fade-in ease-in-out 1.5s reverse;
 }
 @keyframes fade-in {
   0% {

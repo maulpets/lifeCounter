@@ -13,7 +13,7 @@
       </ul>
       <div class="input-field">
         <input v-model="playerName" placeholder="player name"></input>
-        <md-button class="" @click="addPlayer">add</md-button>
+
       </div>
     </div> -->
     <div class="game-setup-wrapper">
