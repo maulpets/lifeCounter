@@ -2,7 +2,7 @@
   <transition name="fade-in" mode="out-in">
   <div class="sign-up-page">
 
-    <transition name="zlide-down">
+    <transition name="slide-down">
       <div class="error-wrapper" v-if="error">
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </div>
@@ -110,14 +110,14 @@ export default {
     width: 100%;
   }
 
-  .sign-in-form-wrapper{
+  .sign-un-form-wrapper{
     margin: auto;
   }
 
-  .zlide-down-enter-active {
+  .slide-down-enter-active {
     animation: slide-down ease-in-out .5s ;
   }
-  .zlide-down-leave-active {
+  .slide-down-leave-active {
     animation: slide-down ease-in-out .5s reverse;
   }
   @keyframes slide-down {
@@ -129,10 +129,10 @@ export default {
     }
   }
 }
-  .phade-in-enter-active {
+  .fade-in-enter-active {
     animation: phade-in ease-in-out 1.5s ;
   }
-  .phade-in-leave-active {
+  .fade-in-leave-active {
     animation: phade-in ease-in-out 1.5s reverse;
   }
   @keyframes phade-in {

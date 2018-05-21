@@ -1,6 +1,13 @@
 <template>
   <transition name="fade-in" mode="out-in">
   <div class="sign-in-page">
+
+    <transition name="slide-down">
+      <div class="error-wrapper" v-if="error">
+        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+      </div>
+    </transition>
+
     <v-container>
       <v-layout row wrap class="sign-in-form-wrapper">
         <v-flex xs8 offset-xs2  >
@@ -49,6 +56,9 @@ export default {
   computed: {
     user (){
       return this.$store.getters.user
+    },
+    error (){
+      return this.$store.getters.error
     }
   },
   watch: {
@@ -61,15 +71,10 @@ export default {
   methods: {
     onLogin () {
       this.$store.dispatch('loginUser', {email: this.email, password: this.password});
+    },
+    onDismissed () {
+      this.$store.dispatch('clearError');
     }
-  },
-  created: function(){
-    console.log("created")
-    this.$data.show = true
-  },
-  destroyed: function(){
-    console.log("boom")
-    this.$data.show = false
   }
 }
 </script>
@@ -79,29 +84,46 @@ export default {
   height: 100%;
   width: 100%;
   display: flex;
+  .error-wrapper{
+    position: absolute;
+    width: 100%;
+  }
 
   .sign-in-form-wrapper{
     margin: auto;
   }
-}
 
-
-
-.fade-in-enter-active {
-  animation: fade-in ease-in-out 1.5s ;
-}
-.fade-in-leave-active {
-  animation: fade-in ease-in-out 1.5s reverse;
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0;
+  .slide-down-enter-active {
+    animation: slide-down ease-in-out .5s ;
   }
-  50%{
-    opacity: 0;
+  .slide-down-leave-active {
+    animation: slide-down ease-in-out .5s reverse;
   }
-  100% {
-    opacity: 1;
+  @keyframes slide-down {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0%);
+    }
   }
 }
+  .fade-in-enter-active {
+    animation: phade-in ease-in-out 1.5s ;
+  }
+  .fade-in-leave-active {
+    animation: phade-in ease-in-out 1.5s reverse;
+  }
+  @keyframes phade-in {
+    0% {
+      opacity: 0;
+    }
+    50%{
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
 </style>

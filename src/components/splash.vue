@@ -3,6 +3,9 @@
 <transition name="slide">
   <div class="title-screen">
     <div class="title-wrapper">
+      <div class="" style="position:absolute; right:0; padding: .5em; opacity: .3; font-size:2em;"v-if="userIsLoggedIn">
+        <h3>{{userInfo.name}}</h3>
+      </div>
       <h1>The<br>Life Counter</h1>
 
       <transition name="phade" mode="in-out">
@@ -21,20 +24,20 @@
             </v-flex>
           </v-layout>
 
-
-
-          <v-layout row wrap v-if="userIsLoggedIn && !hasPlayGroup" class="user-playgroup-menu">
+<!-- v-if="userIsLoggedIn && !hasPlayGroup" -->
+        <v-container v-if="userIsLoggedIn">
+          <v-layout row wrap  class="user-playgroup-menu">
             <v-flex xs12 class="create-playgroup user-option">
-              <a v-on:click="createPlayGroup">create play group</a>
-              <!-- <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link> -->
+              <!-- <a v-on:click="createPlayGroup">create play group</a> -->
+              <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link>
             </v-flex>
             <v-flex xs12 class="join-playgroup user-option">
               <router-link to="/joinPlayGroup">join play group</router-link>
             </v-flex>
           </v-layout>
 
-
-          <v-layout row wrap v-if="hasPlayGroup && userIsLoggedIn" class="game-">
+<!-- v-if="hasPlayGroup && userIsLoggedIn" -->
+          <v-layout row wrap class="game-">
             <v-flex xs12 class="user-create-game user-option">
               <router-link to="/create"  v-on:click.native="startGame">create game</router-link>
             </v-flex>
@@ -42,7 +45,7 @@
               <router-link to="/join">join game</router-link>
             </v-flex>
           </v-layout>
-
+        </v-container>
 
       </v-container>
       </div>
@@ -96,11 +99,11 @@ export default {
     }
   },
   watch: {
-    hasPlayGroup (value){
-      if (value){
-        this.$router.push('/newPlayGroup')
-      }
-    }
+    // hasPlayGroup (value){
+    //   if (value){
+    //     this.$router.push('/newPlayGroup')
+    //   }
+    // }
   },
   methods: {
     startGame: function() {

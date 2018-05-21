@@ -6,8 +6,11 @@ import {db} from '../firebase'
 
 import {gameDefaults} from '../defaults'
 import {userDefaults} from '../defaults'
+import {playerDefaults} from '../defaults'
+
 
 Vue.use(Vuex);
+
 
 export const store = new Vuex.Store({
   state: {
@@ -15,13 +18,16 @@ export const store = new Vuex.Store({
     user: null,
     loading: false,
     error: null,
+    activePlayGroup: '',
+    activePlayGroupName: '',
     playgroups: null,
-    playerList: null,
-    gameHistory: null
+    playerList: { },
+    gameHistory: null,
+
   },
   mutations: {
     changeGame(state, newGameInfo) {
-      state.gameInfo = newGameInfo
+      state.gameInfo = Object.assign({}, newGameInfo)
     },
     setUser(state, userInfo){
       state.user = userInfo
@@ -36,7 +42,19 @@ export const store = new Vuex.Store({
       state.error = hasError
     },
     addPlayer(state, playerInfo){
-      state.playerList.push(playerInfo)
+      Vue.set(state.playerList, playerInfo.id, playerInfo)
+    },
+    setPlayerList(state, newPlayerList){
+      state.playerList = Object.assign({}, newPlayerList)
+    },
+    setActivePlayGroup(state, newActivePlayGroup){
+      state.activePlayGroup = newActivePlayGroup
+    },
+    setActivePlayGroupName(state, newActivePlayGroupName){
+      state.activePlayGroupName = newActivePlayGroupName
+    },
+    clearActivePlayGroup(state){
+      state.activePlayGroup = ''
     },
     clearError(state){
       state.error = null
@@ -63,7 +81,6 @@ export const store = new Vuex.Store({
               .then(()=>{
                   commit('setLoading', false)
                   commit('setUser', newUser)
-                  commit('setPlaygroups', userDefaults.playgroups )
                 }
               ).catch(
                 error => {
@@ -91,27 +108,22 @@ export const store = new Vuex.Store({
               .then((snapshot) => {
                 const userData ={
                   id: firebase.auth().currentUser.uid,
-                  name: snapshot.val().name,
-                  wins: snapshot.val().wins
+                  name: snapshot.val().name
                 }
                 commit('setUser', userData)
+                if(snapshot.val().playgroups)
                 commit('setPlaygroups', snapshot.val().playgroups )
                 commit('setLoading', false)
-              }
-            ).catch(
-              error =>{
+              }).catch( error =>{
                 commit('setLoading', false)
                 commit('setError', error)
                 console.log(error)
               });
-
-          }).catch(
-            error =>{
+            }).catch( error =>{
               commit('setLoading', false)
               commit('setError', error)
               console.log(error)
-            }
-          )
+            });
       },
 
       createGame({commit}){
@@ -132,23 +144,65 @@ export const store = new Vuex.Store({
           )
       },
 
-      createPlayGroup({commit, state}){
+      createPlayGroup({commit, state, dispatch}){
         commit('setLoading', true)
-        const newPlayGroup = {
-          active: Math.random().toString(36).substr(2, 9)
-        }
-        db.ref('playgroups/' + newPlayGroup.active +'/playerList/' + state.user.id ).set(state.user)
+        commit('clearError')
+        commit('setActivePlayGroup', '')
+        commit('setPlayerList', { })
+        const newActivePlayGroup = Math.random().toString(36).substr(2, 9)
+        db.ref('playgroups/' + newActivePlayGroup ).set({status: 'new'})
           .then(() => {
-            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/').set(newPlayGroup)
-            .then(() => {
               commit('setLoading', false)
-              commit('setPlaygroups', newPlayGroup)
-            }).catch(error =>{
-                commit('setLoading', false)
-                commit('setError', error)
-                console.log(error)
-              });
+              commit('setActivePlayGroup', newActivePlayGroup)
+              const newPlayerInfo = {
+                ...playerDefaults,
+                name: state.user.name,
+                id: state.user.id
+              }
+              dispatch('addPlayerToGroup', newPlayerInfo)
+          }).catch(
+            error =>{
+              commit('setLoading', false)
+              commit('setError', error)
+              console.log(error)
+            }
+          )
+      },
+      makePlayGroup({commit, state}, groupName){
+        commit('setLoading', true)
+        commit('clearError')
+        console.log(groupName)
+        db.ref('playgroups/' + state.activePlayGroup ).child('name').set( groupName )
+        db.ref('playgroups/' + state.activePlayGroup ).child('status').set('active')
+          .then(() => {
+            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName})
 
+          }).catch(
+            error =>{
+              commit('setLoading', false)
+              commit('setError', error)
+              console.log(error)
+            }
+          )
+
+      },
+
+      addPlayerToGroup({commit, state}, newPlayerInfo){
+        commit('setLoading', true)
+        commit('clearError')
+        let playerID
+
+        if( newPlayerInfo.id )
+          playerID = newPlayerInfo.id
+          else{
+            playerID = db.ref('playgroups/' + state.activePlayGroup + '/playerList'  ).push().key
+            newPlayerInfo['id'] = playerID
+            newPlayerInfo['temp'] = true
+          }
+        db.ref('playgroups/' + state.activePlayGroup + '/playerList/' + playerID ).set( newPlayerInfo )
+          .then(() => {
+            commit('setLoading', false)
+            commit('addPlayer', newPlayerInfo)
           }).catch(
             error =>{
               commit('setLoading', false)
@@ -158,11 +212,129 @@ export const store = new Vuex.Store({
           )
       },
 
-      addPlayerToGroup({commit, state}, newPlayerInfo){
-        const newKey = db.ref('playgroups/' + state.playgroups.active + '/playerList'  ).push().key
-        db.ref('playgroups/' + state.playgroups.active + '/playerList/' + newKey   ).set(newPlayerInfo)
+      removePlayerFromGroup({commit, state}, playerID){
+        commit('setLoading', true)
+        commit('clearError')
+
+        db.ref('playgroups/' + state.activePlayGroup + '/playerList/').child(playerID).remove()
+        .then(()=>{
+          commit('setLoading', false)
+          const newPlayerList = state.playerList
+          console.log(newPlayerList)
+          delete newPlayerList[playerID]
+          console.log(newPlayerList)
+          commit('setPlayerList', newPlayerList)
+        }).catch(
+          error =>{
+            commit('setLoading', false)
+            commit('setError', error)
+            console.log(error)
+          }
+        )
       },
 
+      loadPlayGroup({commit}, newActivePlayGroup){
+        commit('setLoading', true)
+        commit('clearError')
+        commit('setActivePlayGroup', newActivePlayGroup)
+
+        db.ref('playgroups/'+ newActivePlayGroup).once('value')
+          .then((playgroup) => {
+
+            const newPlayerList = playgroup.val().playerList
+            const newActivePlayGroupName = playgroup.val().name
+
+            commit('setActivePlayGroupName', newActivePlayGroupName)
+
+            commit('setPlayerList', newPlayerList)
+            commit('setLoading', false)
+          }).catch(
+            error =>{
+              commit('setLoading', false)
+              commit('setError', error)
+              console.log(error)
+            }
+          )
+      },
+
+      joinPlayGroup({commit, state, dispatch}, config){
+
+        const playerDetails = ( config.replacePlayer ) ?  state.playerList[config.requestedPlayerID] : playerDefaults
+
+        delete playerDetails.temp
+
+        const newPlayerDetails = {
+          ...playerDetails,
+          name: state.user.name,
+          id: firebase.auth().currentUser.uid
+        }
+
+
+
+
+        if( config.replacePlayer )
+          dispatch('claimPlayerInGroup', {requestedPlayerID: config['requestedPlayerID'], newPlayerDetails: newPlayerDetails})
+          .then(()=>{
+              commit('setLoading', false)
+          }).catch(
+              error => {
+                commit('setLoading', false)
+                commit('setError', error)
+                console.log(error)
+              }
+            )
+          else
+            dispatch('addPlayerToGroup', newPlayerDetails)
+            .then(logThis('promised'))
+
+
+        function set(){
+            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName})
+            .then(() => {
+              commit('setLoading', false)
+              commit('setPlaygroups', newPlayGroup)
+            }).catch(error =>{
+                commit('setLoading', false)
+                commit('setError', error)
+                console.log(error)
+              })
+        }
+
+            // db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/').set(newActivePlayGroup)
+            // .then(() => {
+
+      },
+
+      claimPlayerInGroup({commit, state}, payload){
+        commit('setLoading', true)
+        commit('clearError')
+
+        console.log(payload)
+
+
+        db.ref('playgroups/' + state.activePlayGroup + '/playerList/' + firebase.auth().currentUser.uid ).set( payload.newPlayerDetails )
+          .then(() => {
+            db.ref('playgroups/' + state.activePlayGroup + '/playerList/').child(payload.requestedPlayerID).remove()
+              .then(() => {
+                commit('setLoading', true)
+                console.log('player claimed')
+
+              }).catch(
+                error =>{
+                  commit('setLoading', false)
+                  commit('setError', error)
+                  console.log(error)
+                }
+              )
+          }).catch(
+            error =>{
+              commit('setLoading', false)
+              commit('setError', error)
+              console.log(error)
+            }
+          )
+
+      },
 
       clearError({commit}){
         commit('clearError')
@@ -173,10 +345,13 @@ export const store = new Vuex.Store({
 
 
     getters:{
-      loadedGame: (state) => {return state.gameInfo;},
-      user:  (state) => {return state.user;},
+      loadedGame: (state) => {return state.gameInfo},
+      user:  (state) => {return state.user},
       error: (state) => {return state.error},
       loading: (state) => {return state.loading},
-      playgroups: (state) => {return state.playgroups}
+      playgroups: (state) => {return state.playgroups},
+      playerList: (state) => {return state.playerList},
+      activePlayGroup: (state) => { return state.activePlayGroup},
+      activePlayGroupName: (state) => { return state.activePlayGroupName}
     }
 });
