@@ -14,40 +14,77 @@
           required>
           </v-text-field>
           <v-btn flat type="submit" >connect</v-btn>
+          <v-btn flat @click="joinableGames" >connect</v-btn>
         </v-form>
         </v-flex>
       </v-layout>
+
+
+<v-layout row v-for="allGroups in activeGroups" v-bind:key="allGroups['.key']">
+  {{allGroups.activeGame}}
+</v-layout>
+      <!-- <v-layout row v-for="allGroups in activeGroups" v-bind:key="allGroups['.key']">
+        <v-flex v-for="groups in playGroups">
+        {{groups.id}}
+
+          <v-flex v-if="allGroups['.key'] = groups.id">
+            {{allGroups.activeGame}}
+        {{allGroups}}
+          </v-flex>
+        </v-flex>
+      </v-layout> -->
+
     </v-container>
   </div>
 </transition>
 </template>
 
 <script>
+import firebase from 'firebase'
+import {db} from '../firebase'
+
 export default {
   name: 'join',
-  props:[
-
-  ],
+  firebase: function () {
+    return {
+      activeGroups: db.ref( 'playgroups')
+    }
+  },
   data: function () {
     return{
       gameID: '',
+      gamelist: []
     }
   },
   computed: {
     loadedGame (){
       return this.$store.getters.loadedGame
+    },
+    playGroups (){
+      return this.$store.getters.playgroups
     }
+    // allGroups(){
+    //     return this.$firebaseRefs.activeGroups
+    // }
+
   },
   watch: {
-    loadedGame (value){
-      if (value !== null && value !== undefined){
-        this.$router.push('/scoreboard')
-      }
+    playGroups (value){
+
     }
   },
   methods: {
-    onConnect () {
-      this.$store.dispatch('changeGame', {id: this.gameID});
+    joinableGames(){
+      //
+      // let data;
+      // db.ref().child('playgroups').once('value')
+      // .then(function(snap){
+      //   data = snap.val();
+      //
+      //   console.log(data)
+      //   })
+
+
     }
   }
 }

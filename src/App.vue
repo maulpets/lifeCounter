@@ -29,5 +29,8 @@ a {
   text-decoration: none;
 }
 
+.application .theme--dark.card, .theme--dark .card{
+    background-color: #373b41 !important;
+}
 
 </style>

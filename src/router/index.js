@@ -6,12 +6,17 @@ import splashscreen from '@/components/splash'
 import signup from '@/components/signup'
 import login from '@/components/login'
 
+import main from '@/components/main'
+
 import newPlayGroup from '@/components/newPlayGroup'
 import joinPlayGroup from '@/components/joinPlayGroup'
 
-import create from '@/components/create'
+import newGame from '@/components/newGame'
 import join from '@/components/join'
 
+import play from '@/components/play'
+
+import game from '@/components/game'
 
 
 import scoreboard from '@/components/scoreboard'
@@ -21,6 +26,7 @@ import remote from '@/components/remote'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -38,6 +44,11 @@ export default new Router({
       component: login
     },
     {
+      path: '/main',
+      name: 'main',
+      component: main
+    },
+    {
       path: '/newPlayGroup',
       name: 'newPlayGroup',
       component: newPlayGroup
@@ -48,9 +59,19 @@ export default new Router({
       component: joinPlayGroup
     },
     {
-      path: '/create',
-      name: 'create',
-      component: create
+      path: '/play',
+      name: 'play',
+      component: play
+    },
+    {
+      path: '/game',
+      name: 'game',
+      component: game
+    },
+    {
+      path: '/newGame',
+      name: 'newGame',
+      component: newGame
     },
     {
       path: '/join',

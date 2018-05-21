@@ -53,6 +53,9 @@ export const store = new Vuex.Store({
     setActivePlayGroupName(state, newActivePlayGroupName){
       state.activePlayGroupName = newActivePlayGroupName
     },
+    clearPlayerList(state){
+      state.playerList = { }
+    },
     clearActivePlayGroup(state){
       state.activePlayGroup = ''
     },
@@ -95,8 +98,7 @@ export const store = new Vuex.Store({
             commit('setLoading', false)
             commit('setError', error)
             console.log(error)
-          }
-          )
+          })
       },
 
       loginUser({commit}, loginUserInfo ){
@@ -134,7 +136,7 @@ export const store = new Vuex.Store({
         db.ref('games/' + newGameID ).set(gameDefaults)
           .then(() => {
             commit('setLoading', false)
-            commit('changeGame', gameInfo);
+            commit('changeGame', gameInfo)
           }).catch(
             error =>{
               commit('setLoading', false)
@@ -175,7 +177,7 @@ export const store = new Vuex.Store({
         db.ref('playgroups/' + state.activePlayGroup ).child('name').set( groupName )
         db.ref('playgroups/' + state.activePlayGroup ).child('status').set('active')
           .then(() => {
-            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName})
+            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName, id: state.activePlayGroup})
 
           }).catch(
             error =>{
@@ -276,33 +278,35 @@ export const store = new Vuex.Store({
           dispatch('claimPlayerInGroup', {requestedPlayerID: config['requestedPlayerID'], newPlayerDetails: newPlayerDetails})
           .then(()=>{
               commit('setLoading', false)
+              set()
           }).catch(
               error => {
                 commit('setLoading', false)
                 commit('setError', error)
                 console.log(error)
-              }
-            )
+              })
           else
             dispatch('addPlayerToGroup', newPlayerDetails)
-            .then(logThis('promised'))
-
+              .then(()=>{
+                  commit('setLoading', false)
+                  set()
+              }).catch(
+                  error => {
+                    commit('setLoading', false)
+                    commit('setError', error)
+                    console.log(error)
+                  })
 
         function set(){
-            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName})
+            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: state.activePlayGroupName, id: state.activePlayGroup})
             .then(() => {
               commit('setLoading', false)
-              commit('setPlaygroups', newPlayGroup)
             }).catch(error =>{
                 commit('setLoading', false)
                 commit('setError', error)
                 console.log(error)
               })
         }
-
-            // db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/').set(newActivePlayGroup)
-            // .then(() => {
-
       },
 
       claimPlayerInGroup({commit, state}, payload){
@@ -335,7 +339,13 @@ export const store = new Vuex.Store({
           )
 
       },
+      clearPlayerList({commit}){
+        commit('clearPlayerList')
+      },
 
+      clearActivePlayGroup({commit}){
+        commit('clearActivePlayGroup')
+      },
       clearError({commit}){
         commit('clearError')
       }

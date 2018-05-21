@@ -36,7 +36,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout row wrap v-for="(player, playerID) in playerList"  align-center class="player-list" >
+            <v-layout row wrap v-for="(player, playerID) in playerList"  align-center class="player-list" :key="player.id" >
 
               <v-flex xs3 class="pa-2 player-list player-name" >
                 {{player.name}}
@@ -74,10 +74,10 @@
 
       <v-layout row justify-space-between class="menu" pa-3>
         <v-flex xs6>
-          <router-link class="back-button" to="/"><v-btn flat>back</v-btn></router-link>
+          <router-link class="back-button" to="/main"><v-btn flat>back</v-btn></router-link>
         </v-flex>
         <v-flex xs6>
-          <router-link class="create-group" to="/"  v-on:click.native="makePlayGroup"><v-btn>Make group</v-btn></router-link>
+          <router-link class="create-group" to="/main"  v-on:click.native="makePlayGroup"> <v-btn :disabled="playGroupName" > Make group </v-btn></router-link>
         </v-flex>
       </v-layout>
     </v-container>
@@ -112,6 +112,12 @@ export default {
     },
     playerList (){
       return this.$store.getters.playerList
+    },
+    playGroupName(){
+      if( this.$data.groupName !== '' )
+      return false
+      else
+      return true
     }
   },
 

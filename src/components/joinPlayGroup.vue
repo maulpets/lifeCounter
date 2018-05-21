@@ -40,7 +40,7 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout row  v-for="(player, playerKey) in playerList" align-center class="player-list"  v-bind:class="{ 'is-selected': isClaimed(playerKey) }"  >
+              <v-layout row  v-for="(player, playerKey) in playerList" :key="player.id" align-center class="player-list"  v-bind:class="{ 'is-selected': isClaimed(playerKey) }"  >
                 <v-flex xs6 class="pa-2 player-list player-name" >
                   {{player.name}}
                 </v-flex>
@@ -101,7 +101,7 @@ export default {
   data: function () {
     return{
       displayResults: false,
-      playGroupID: 'aj05730m1',
+      playGroupID: '',
       dialog: false,
       requestClaimKey: '',
       claimConfirmed: false,

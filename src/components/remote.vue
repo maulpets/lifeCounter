@@ -56,7 +56,7 @@ export default {
   },
   firebase: function () {
     return {
-      playerList:   db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/')
+      playerList:   db.ref('games/'+ this.$store.getters.loadedGame.id + '/players/')
     }
   },
   computed: {
@@ -67,11 +67,11 @@ export default {
   methods: {
     add: function( player, amountToChange, valueToChange ) {
       const newValue = player[valueToChange] + amountToChange;
-      db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/' + player.name ).child(valueToChange).set(newValue)
+      db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.name ).child(valueToChange).set(newValue)
     },
     subtract: function (player, amountToChange, valueToChange){
       const newValue = player[valueToChange] - amountToChange;
-      db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/' + player.name ).child(valueToChange).set(newValue)
+      db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.name ).child(valueToChange).set(newValue)
     },
     isCounting: function (player, valueThatsCounting){
       return player[valueThatsCounting] > 0;

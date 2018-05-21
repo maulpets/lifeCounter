@@ -3,6 +3,12 @@
 <transition name="slide">
   <div class="title-screen">
     <div class="title-wrapper">
+      <div class="" style="position:absolute; right:0; padding: .5em; opacity: .3; font-size:2em;">
+        <h3 style="text-align:right">{{userInfo.name}}</h3>
+        <ul v-if="hasPlayGroup">
+          <li  v-for="group in playGroups" :key="group['.key']">{{group.name}} - {{group['.key']}} </li>
+        </ul>
+      </div>
       <h1>The<br>Life Counter</h1>
 
       <transition name="phade" mode="in-out">
@@ -10,21 +16,25 @@
 
 
       <v-container class="title-menu" >
-
-
-          <v-layout row wrap v-if="!userIsLoggedIn" class="user-login-menu">
-            <v-flex xs12 class="user-sign-in user-option">
-              <router-link to="/login">login</router-link>
+        <v-container>
+          <v-layout row wrap  class="user-playgroup-menu">
+            <v-flex xs12 class="create-playgroup user-option">
+              <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link>
             </v-flex>
-            <v-flex xs12 class="user-sign-up user-option">
-              <router-link to="/signup">sign up</router-link>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap v-if="userIsLoggedIn" class="user-login-menu">
-            <v-flex xs12 class="user-sign-in user-option">
-              <router-link to="/main">home</router-link>
+            <v-flex xs12 class="join-playgroup user-option">
+              <router-link to="/joinPlayGroup">join play group</router-link>
             </v-flex>
           </v-layout>
+          <v-layout row wrap class="game-">
+            <v-flex xs12 class="user-create-game user-option">
+              <router-link to="/newGame"  v-on:click.native="startGame">create game</router-link>
+            </v-flex>
+            <v-flex class="user-join-game user-option">
+              <router-link to="/join">join game</router-link>
+            </v-flex>
+          </v-layout>
+        </v-container>
+
 
       </v-container>
       </div>
@@ -35,11 +45,12 @@
 </transition>
 </template>
 
+
 <script>
 import firebase from 'firebase'
 import {db} from '../firebase'
 import {gameDefaults} from '../defaults'
-import signup from './signup.vue'
+
 
 export default {
   name: 'splashscreen',
@@ -47,6 +58,9 @@ export default {
 
   },
   firebase: function () {
+    return {
+      playGroups: db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' )
+    }
   },
   data: function(){
     return {
@@ -54,18 +68,30 @@ export default {
      }
   },
   computed: {
-    userIsLoggedIn (){
+    hasPlayGroup (){
+      return this.$store.getters.playgroups !== null && this.$store.getters.playgroups !== undefined
+    },
+    userInfo (){
       return this.$store.getters.user
     }
   },
   watch: {
-    userIsLoggedIn (value){
-      if (value !== null && value !== undefined){
-        this.$router.push('/main')
-      }
-    }
+    // hasPlayGroup (value){
+    //   if (value){
+    //     this.$router.push('/newPlayGroup')
+    //   }
+    // }
   },
   methods: {
+    startGame: function() {
+      this.$store.dispatch('clearPlayerList')
+      .then(this.$store.dispatch('createGame'))
+    },
+    createPlayGroup: function(){
+      this.$store.dispatch('clearPlayerList')
+      .then(this.$store.dispatch('createPlayGroup'))
+
+    }
   }
 }
 </script>
