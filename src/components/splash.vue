@@ -76,10 +76,10 @@ export default {
   background-color: #282a2e;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+
   .title-wrapper{
     width: 66vw;
-    height: 100vh;
+    min-height: 100vh;
     margin-left: 34vw;
     text-align: left;
     background-color: #373b41;
@@ -99,7 +99,7 @@ export default {
       .user-option{
         text-align: right;
         padding: 1em;
-        font-size: 1.3em;
+        font-size: 1.1em;
       }
     }
   }

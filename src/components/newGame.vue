@@ -39,7 +39,7 @@
     </v-flex>
     <v-layout row justify-space-between class="menu" pa-3 >
       <v-flex xs6>
-        <router-link class="back-button" to="/main"><v-btn flat>back</v-btn></router-link>
+        <router-link class="back-button" to="/main" v-on:click.native="clearGame"><v-btn flat>back</v-btn></router-link>
       </v-flex>
       <v-flex xs6>
         <router-link class="create-group" to="/play"  v-on:click.native="startGame"> <v-btn :disabled="false" > play </v-btn></router-link>
@@ -105,20 +105,40 @@ export default {
     startGame(){
 
       const updates = { }
-      const selectedPlayers = { }
+      const selectedPlayers = [ ]
       const playerSetup = { }
       const setValues = { }
 
       this.activePlayers.forEach((key) => {
       setValues[this.playerList[key].name] = 0
+      selectedPlayers.push(this.playerList[key].name)
       })
 
       this.activePlayers.forEach((key) => {
-          updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/players/' + this.playerList[key].id ] = {name: this.playerList[key].name, id: this.playerList[key].id}
-          updates['/games/' + this.gameID + '/players/' + this.playerList[key].id ] = {name: this.playerList[key].name, id: this.playerList[key].id, life: this.isSelected, cmd: setValues}
+          updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/players/' + this.playerList[key].id ] =
+          {
+            name: this.playerList[key].name,
+            id: this.playerList[key].id
+          }
+
+          updates['/playgroups/' + this.activePlayGroup + '/playerList/' + this.playerList[key].id + '/isPlaying' ] = this.gameID
+
+
+          updates['/games/' + this.gameID + '/players/' + this.playerList[key].id ] =
+          {
+            name: this.playerList[key].name,
+            id: this.playerList[key].id,
+            life: this.isSelected,
+            cmd: setValues
+          }
 
           if(!this.playerList[key].temp)
-            updates['/users/'+ this.playerList[key].id + '/activeGames/' + this.gameID ] = {id: this.gameID, playgroup: this.activePlayGroup, playgroupName: this.activePlayGroupName}
+            updates['/users/'+ this.playerList[key].id + '/activeGames/' + this.gameID ] = {
+              id: this.gameID,
+              playgroup: this.activePlayGroup,
+              playgroupName: this.activePlayGroupName,
+              players: selectedPlayers
+            }
       })
 
       updates['/games/' + this.gameID + '/playgroup' ] = this.activePlayGroup
@@ -127,13 +147,14 @@ export default {
       updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/id'] = this.gameID
 
       return db.ref().update(updates)
-      .then((x) => {
-        console.log(x)
-      }). catch(
+      .then(). catch(
         error => {
 
         console.log(error)
       })
+    },
+    clearGame(){
+        //remove game from games database on exit IF status = setup
     }
   }
 }

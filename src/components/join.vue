@@ -2,7 +2,30 @@
   <transition name="fade-in" mode="out-in">
   <div class="join-game-page">
     <v-container>
-      <v-layout row wrap class="join-game-form-wrapper">
+      <v-layout>
+        <v-flex><h1>active games</h1></v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex style="width:100%">
+          <v-layout row wrap v-for="game in activeGames" :key="game['.key']" ma-1>
+            <v-flex xs12>
+              <h3 >{{game.playgroupName}}</h3>
+            </v-flex>
+            <v-flex xs4 v-for="player in game.players" :key="player['.key']">
+                {{player}}
+            </v-flex>
+
+
+            <v-flex xs12 pa-3>
+              <v-btn block small color="primary" v-on:click="connectToGame(game)">
+                join game : {{game.id}}
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+
+      <!-- <v-layout row wrap class="join-game-form-wrapper">
         <v-flex xs8 offset-xs2  >
           <h1>join active game</h1>
           <v-form action="index.html" method="post" @submit.prevent="onConnect">
@@ -21,8 +44,8 @@
 
 
 <v-layout row v-for="allGroups in activeGroups" v-bind:key="allGroups['.key']">
-  {{allGroups.activeGame}}
-</v-layout>
+  {{allGroups}}
+</v-layout> -->
       <!-- <v-layout row v-for="allGroups in activeGroups" v-bind:key="allGroups['.key']">
         <v-flex v-for="groups in playGroups">
         {{groups.id}}
@@ -34,6 +57,16 @@
         </v-flex>
       </v-layout> -->
 
+    </v-container>
+    <v-container style="position: absolute; bottom: 0">
+      <v-layout row justify-space-between class="menu" pa-2>
+        <v-flex xs4>
+          <router-link class="back-button" to="/main"> <v-btn flat> back</v-btn></router-link>
+        </v-flex>
+        <!-- <v-flex xs6>
+          <router-link class="create-game-button" to="/main" v-on:click.native="joinGroup(playGroupID)"><v-btn>join</v-btn></router-link>
+        </v-flex> -->
+      </v-layout>
     </v-container>
   </div>
 </transition>
@@ -47,7 +80,8 @@ export default {
   name: 'join',
   firebase: function () {
     return {
-      activeGroups: db.ref( 'playgroups')
+      playGroups: db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ),
+      activeGames: db.ref('users/' + firebase.auth().currentUser.uid + '/activeGames/' )
     }
   },
   data: function () {
@@ -60,31 +94,22 @@ export default {
     loadedGame (){
       return this.$store.getters.loadedGame
     },
-    playGroups (){
+    playgroups (){
       return this.$store.getters.playgroups
     }
-    // allGroups(){
-    //     return this.$firebaseRefs.activeGroups
-    // }
+
 
   },
   watch: {
-    playGroups (value){
-
-    }
+    // playGroups (value){
+    //
+    // }
   },
   methods: {
-    joinableGames(){
-      //
-      // let data;
-      // db.ref().child('playgroups').once('value')
-      // .then(function(snap){
-      //   data = snap.val();
-      //
-      //   console.log(data)
-      //   })
-
-
+    connectToGame: function(gameData){
+      console.log(gameData)
+      this.$store.dispatch('connectToGame', gameData)
+        .then( this.$router.push('/play') )
     }
   }
 }
@@ -94,7 +119,6 @@ export default {
 .join-game-page{
   height: 100%;
   width: 100%;
-  display: flex;
 
   .join-game-form-wrapper{
     margin: auto;
@@ -107,6 +131,8 @@ export default {
   animation: fade-in ease-in-out 1.5s ;
 }
 .fade-in-leave-active {
+  position: absolute;
+  top: 0;
   animation: fade-in ease-in-out 1.5s reverse;
 }
 @keyframes fade-in {

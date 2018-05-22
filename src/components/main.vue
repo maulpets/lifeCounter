@@ -2,45 +2,63 @@
 <template>
 <transition name="slide">
   <div class="title-screen">
-    <div class="title-wrapper">
-      <div class="" style="position:absolute; right:0; padding: .5em; opacity: .3; font-size:2em;">
-        <h3 style="text-align:right">{{userInfo.name}}</h3>
-        <ul v-if="hasPlayGroup">
-          <li  v-for="group in playGroups" :key="group['.key']">{{group.name}} - {{group['.key']}} </li>
-        </ul>
-      </div>
-      <h1>The<br>Life Counter</h1>
+          <div class="" style="position:absolute; right:0; padding: .5em; opacity: .3; font-size:1em;">
+            <h3 style="text-align:right">{{userInfo.name}}</h3>
+            <ul v-if="hasPlayGroup">
+              <li  v-for="group in playGroups" :key="group['.key']">{{group.name}} - {{group['.key']}} </li>
+            </ul>
+          </div>
+    <v-container class="title-wrapper" pa-1>
+      <v-layout row class="title-text">
+        <h1>The<br>Life Counter</h1>
+      </v-layout>
+<!--
+      <v-flex style="width:100%">
+        <v-layout row wrap v-for="game in activeGames" :key="game['.key']" ma-1>
+          <v-flex xs12>
+            <h3 >{{game.playgroupName}}</h3>
+          </v-flex>
+          <v-flex xs4 v-for="player in game.players" :key="player['.key']">
+              {{player}}
+          </v-flex>
 
-      <transition name="phade" mode="in-out">
-      <div class="phade">
+
+          <v-flex xs12 pa-3>
+            <v-btn block small color="primary" v-on:click="connectToGame(game)">
+              join game : {{game.id}}
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-flex> -->
 
 
-      <v-container class="title-menu" >
-        <v-container>
+        <transition name="phade" mode="in-out">
+        <div class="phade" style="width:100%">
+        <v-container class="title-menu" >
+
           <v-layout row wrap  class="user-playgroup-menu">
+            <v-flex xs12 class="user-create-game user-option">
+              <router-link to="/newGame"  v-on:click.native="startGame">create game</router-link>
+            </v-flex>
+
             <v-flex xs12 class="create-playgroup user-option">
               <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link>
             </v-flex>
             <v-flex xs12 class="join-playgroup user-option">
               <router-link to="/joinPlayGroup">join play group</router-link>
             </v-flex>
-          </v-layout>
-          <v-layout row wrap class="game-">
-            <v-flex xs12 class="user-create-game user-option">
-              <router-link to="/newGame"  v-on:click.native="startGame">create game</router-link>
-            </v-flex>
-            <v-flex class="user-join-game user-option">
+            <v-flex xs12 class="join-game user-option">
               <router-link to="/join">join game</router-link>
             </v-flex>
+
+
           </v-layout>
+
         </v-container>
-
-
+        </div>
+        </transition>
       </v-container>
-      </div>
-      </transition>
 
-    </div>
   </div>
 </transition>
 </template>
@@ -59,12 +77,18 @@ export default {
   },
   firebase: function () {
     return {
-      playGroups: db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' )
+      playGroups: db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ),
+      activeGames: db.ref('users/' + firebase.auth().currentUser.uid + '/activeGames/' )
     }
   },
   data: function(){
     return {
-      gameID: ''
+      gameID: '',
+      // dropdown_icon: [
+      //     { text: 'create new playgroup', callback: () => this.createPlayGroup() },
+      //     { text: 'favorite', callback: () => console.log('favorite') },
+      //     { text: 'delete', callback: () => console.log('delete') }
+      //   ]
      }
   },
   computed: {
@@ -84,15 +108,28 @@ export default {
   },
   methods: {
     startGame: function() {
-      this.$store.dispatch('clearPlayerList')
-      .then(this.$store.dispatch('createGame'))
+      this.$store.dispatch('createGame')
     },
     createPlayGroup: function(){
       this.$store.dispatch('clearPlayerList')
-      .then(this.$store.dispatch('createPlayGroup'))
+      .then(this.$store.dispatch('createPlayGroup')
+        .then( this.$router.push('/newPlayGroup') ))
 
+    },
+    connectToGame: function(gameData){
+      console.log(gameData)
+      this.$store.dispatch('connectToGame', gameData)
+        .then( this.$router.push('/play') )
     }
-  }
+  },
+  mounted(){
+          this.$store.dispatch('clearGame')
+          this.$store.dispatch('clearActivePlayGroup')
+          this.$store.dispatch('clearActivePlayGroupName')
+        }
+
+
+
 }
 </script>
 
@@ -101,31 +138,33 @@ export default {
 .title-screen{
   background-color: #282a2e;
   height: 100%;
-  width: 100%;
   overflow: hidden;
   .title-wrapper{
-    width: 66vw;
-    height: 100vh;
-    margin-left: 34vw;
+    width: 67vw;
+    min-height: 100vh;
+    margin-left: 33vw;
     text-align: left;
     background-color: #373b41;
     display: flex;
     flex-flow: column;
-    h1{
-      margin: 25vh 3vw auto;
-      line-height: 1.01em;
-      letter-spacing: .025em;
-      font-size: 9vw;
-      opacity: .8;
-    }
+      .title-text{
+        width: 100%;
+        h1{
+          margin: auto 1vw;
+          line-height: 1.01em;
+          letter-spacing: .025em;
+          font-size: 9vw;
+          opacity: .8;
+        }
+      }
     .title-menu{
       display: block;
-      margin: auto 0 15vh 0;
+      margin: auto 0;
       flex: none;
       .user-option{
         text-align: right;
         padding: 1em;
-        font-size: 1.3em;
+        font-size: 1.1em;
       }
     }
   }

@@ -3,7 +3,7 @@
   <div class="join-playgroup-page">
 
 
-          <v-container class="join-playgroup-form-wrapper">
+          <v-container class="join-playgroup-form-wrapper" pb-0 >
             <v-layout row>
               <v-flex xs12>
                 <!-- <h3 style="text-align:left; margin-bottom:5px;" >Search Groups</h3> -->
@@ -23,7 +23,7 @@
           </v-container>
 
           <v-fade-transition>
-            <v-container class="player-list-wrapper" v-show="displayResults">
+            <v-container class="player-list-wrapper" v-show="displayResults" ma-0 pa-0>
               <v-layout row>
                 <v-flex xs12>
                   <h1>{{playGroupName}}</h1>
@@ -79,10 +79,10 @@
       <v-container>
         <v-layout row justify-space-between class="menu" pa-3>
           <v-flex xs6>
-            <router-link class="back-button" to="/"> <v-btn flat> back</v-btn></router-link>
+            <router-link class="back-button" to="/main"> <v-btn flat> back</v-btn></router-link>
           </v-flex>
           <v-flex xs6>
-            <router-link class="create-game-button" to="/" v-on:click.native="joinGroup(playGroupID)"><v-btn>join</v-btn></router-link>
+            <router-link class="create-game-button" to="/main" v-on:click.native="joinGroup(playGroupID)"><v-btn>join</v-btn></router-link>
           </v-flex>
         </v-layout>
       </v-container>

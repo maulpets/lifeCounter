@@ -1,11 +1,11 @@
 <template>
   <transition name="fade-in" mode="out-in">
   <div class="new-playgroup-page">
-    <v-container>
+    <v-container pa-0>
       <v-layout row wrap class="new-playgroup-form-wrapper">
-        <v-flex xs12 sm8 offset-sm2 >
+        <v-flex xs12 sm10 offset-sm1 >
 
-          <v-container>
+          <v-container pa-3>
 
             <v-layout row>
               <v-flex xs12>
@@ -28,7 +28,7 @@
 
           </v-container>
 
-          <v-container class="player-list-wrapper">
+          <v-container class="player-list-wrapper" pa-3>
 
             <v-layout row>
               <v-flex xs12>
@@ -77,7 +77,7 @@
           <router-link class="back-button" to="/main"><v-btn flat>back</v-btn></router-link>
         </v-flex>
         <v-flex xs6>
-          <router-link class="create-group" to="/main"  v-on:click.native="makePlayGroup"> <v-btn :disabled="playGroupName" > Make group </v-btn></router-link>
+           <v-btn :disabled="playGroupName" @click="makePlayGroup" > Make group </v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -136,6 +136,7 @@ export default {
     makePlayGroup(){
       const groupName = this.groupName
       this.$store.dispatch('makePlayGroup', groupName)
+      .then(this.$router.push('/main'))
     }
 
   }
@@ -173,7 +174,11 @@ export default {
     position: absolute;
     bottom: 0;
     width: 100%;
+    .create-group{
+      color: inherit;
+    }
   }
+
 }
 
 
