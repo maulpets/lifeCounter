@@ -113,14 +113,14 @@ export const createPlayGroup = ({commit, state, dispatch}) => {
       })
 }
 
-export const makePlayGroup = ({commit, state}, groupName) => {
+export const makePlayGroup = ({commit, state}, newPlayGroup) => {
   commit('setLoading', true)
   commit('clearError')
-  console.log(groupName)
-  db.ref('playgroups/' + state.activePlayGroup ).child('name').set( groupName )
-  db.ref('playgroups/' + state.activePlayGroup ).child('status').set('active')
+  // console.log(newPlayGroup)
+  db.ref('playgroups/' + newPlayGroup.id ).child('name').set( newPlayGroup.name )
+  db.ref('playgroups/' + newPlayGroup.id ).child('status').set('active')
     .then(() => {
-      db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName, id: state.activePlayGroup})
+      db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(newPlayGroup.id).set({name: newPlayGroup.name, id: newPlayGroup.id})
 
     }).catch(
       error =>{

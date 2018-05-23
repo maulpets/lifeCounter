@@ -111,15 +111,13 @@ export default {
       this.$store.dispatch('createGame')
     },
     createPlayGroup: function(){
-      this.$store.dispatch('clearPlayerList')
-      .then(this.$store.dispatch('createPlayGroup')
-        .then( this.$router.push('/newPlayGroup') ))
+      this.$store.dispatch('createPlayGroup')
+        .then( this.$router.push('/newPlayGroup') )
 
     },
     connectToGame: function(gameData){
       console.log(gameData)
       this.$store.dispatch('connectToGame', gameData)
-        .then( this.$router.push('/play') )
     }
   },
   mounted(){

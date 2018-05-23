@@ -47,8 +47,10 @@ import firebase from 'firebase'
 import {db} from '../firebase'
 
 
+
 export default {
   name: 'remote',
+
   data: function() {
     return {
       playerName: ''

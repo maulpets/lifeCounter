@@ -16,7 +16,7 @@ import join from '@/components/join'
 
 import play from '@/components/play'
 
-import game from '@/components/game'
+import game from '@/components/gameUI/game'
 
 
 import scoreboard from '@/components/scoreboard'

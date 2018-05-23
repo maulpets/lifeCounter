@@ -57,7 +57,7 @@ export const store = new Vuex.Store({
       state.playerList = { }
     },
     clearActivePlayGroup(state){
-      state.activePlayGroup = ''
+      state.activePlayGroup = { }
     },
     clearError(state){
       state.error = null
@@ -170,14 +170,17 @@ export const store = new Vuex.Store({
             }
           )
       },
-      makePlayGroup({commit, state}, groupName){
+      makePlayGroup({commit, state}, newPlayGroup){
         commit('setLoading', true)
         commit('clearError')
-        console.log(groupName)
-        db.ref('playgroups/' + state.activePlayGroup ).child('name').set( groupName )
-        db.ref('playgroups/' + state.activePlayGroup ).child('status').set('active')
+        commit('setActivePlayGroupName', newPlayGroup.name)
+        console.log(newPlayGroup)
+
+        db.ref('playgroups/' + newPlayGroup.groupID ).child('name').set( newPlayGroup.groupID )
+        db.ref('playgroups/' + newPlayGroup.groupID ).child('status').set('active')
           .then(() => {
-            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(state.activePlayGroup).set({name: groupName, id: state.activePlayGroup})
+            db.ref('users/' + firebase.auth().currentUser.uid + '/playgroups/' ).child(newPlayGroup.groupID).set({name: newPlayGroup.name, id: newPlayGroup.groupID})
+            .then(this.$router.push('/play'))
 
           }).catch(
             error =>{
@@ -339,6 +342,10 @@ export const store = new Vuex.Store({
           )
 
       },
+      setActivePlayGroup({commit}, newActiveGroup){
+        commit('setActivePlayGroup', newActiveGroup)
+      }
+
       clearPlayerList({commit}){
         commit('clearPlayerList')
       },

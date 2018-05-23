@@ -134,9 +134,14 @@ export default {
       this.$store.dispatch('removePlayerFromGroup', playerID )
     },
     makePlayGroup(){
-      const groupName = this.groupName
-      this.$store.dispatch('makePlayGroup', groupName)
-      .then(this.$router.push('/main'))
+      const newPlayGroup ={
+        name:this.groupName,
+        id: '' + this.activePlayGroup
+      }
+
+      console.log (newPlayGroup)
+      this.$store.dispatch('makePlayGroup', newPlayGroup)
+      .then( this.$router.push('/main') )
     }
 
   }
