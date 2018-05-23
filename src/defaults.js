@@ -4,7 +4,8 @@ export const gameDefaults = {
 
             //adding new users to system
 export const userDefaults = {
-              wins: 0
+              wins: 0,
+              settings: {color: 'blue'}
             }
 
             //adding players to play groups

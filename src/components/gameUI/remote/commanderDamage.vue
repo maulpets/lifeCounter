@@ -2,7 +2,7 @@
   <transition name="slide-in" mode="in-out">
   <v-container pa-3 >
     <v-layout row>
-      <v-flex xs12 v-for="(damageTaken, opponent) in opponents" @click="add(damageTaken, opponent, 1)" class="commander-beats">
+      <v-flex xs12 v-for="(damageTaken, opponent) in opponents" @click="add(damageTaken, opponent, 1)" class="commander-beats" key="opponents">
         <div class="commander-beats commander-damage-taken">{{damageTaken}}</div>
         <div class="commander-beats commander-opponent-name">{{opponent}}</div>
 

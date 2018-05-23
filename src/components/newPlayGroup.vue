@@ -8,7 +8,7 @@
           <v-container pa-3>
 
             <v-layout row>
-              <v-flex xs12>
+              <v-flex xs12 pa-0>
                <h1>New Play Group</h1>
                <h3>group id: {{activePlayGroup}}</h3>
               </v-flex>
