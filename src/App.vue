@@ -18,8 +18,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   position: fixed;
-  overflow: hidden;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background-color: #373b41;
 }

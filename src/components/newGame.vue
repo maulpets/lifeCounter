@@ -118,7 +118,7 @@ export default {
           updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/players/' + this.playerList[key].id ] =
           {
             name: this.playerList[key].name,
-            id: this.playerList[key].id
+            id: this.playerList[key].id,
           }
 
           updates['/playgroups/' + this.activePlayGroup + '/playerList/' + this.playerList[key].id + '/isPlaying' ] = this.gameID
@@ -147,7 +147,7 @@ export default {
       updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/id'] = this.gameID
 
       return db.ref().update(updates)
-      .then(). catch(
+      .then().catch(
         error => {
 
         console.log(error)

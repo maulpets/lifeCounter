@@ -24,6 +24,8 @@ import scoreboard from '@/components/scoreboard'
 import remote from '@/components/remote'
 
 
+import AuthGaurd from './AuthGaurd'
+
 Vue.use(Router)
 
  const router = new Router({
@@ -47,7 +49,8 @@ Vue.use(Router)
     {
       path: '/main',
       name: 'main',
-      component: main
+      component: main,
+      beforeEnter: AuthGaurd
     },
     {
       path: '/newPlayGroup',
@@ -92,12 +95,6 @@ Vue.use(Router)
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  console.log(store.getters.user)
-  if(store.getters.user === null)
-  next('/')
-  else
-    next()
-})
+
 
 export default router
