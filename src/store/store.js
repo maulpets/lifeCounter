@@ -23,7 +23,6 @@ export const store = new Vuex.Store({
     playgroups: null,
     playerList: { },
     gameHistory: null,
-
   },
   mutations: {
     changeGame(state, newGameInfo) {

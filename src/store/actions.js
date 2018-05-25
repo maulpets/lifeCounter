@@ -162,9 +162,9 @@ export const removePlayerFromGroup = ({commit, state}, playerID) => {
   .then(()=>{
     commit('setLoading', false)
     const newPlayerList = state.playerList
-    console.log(newPlayerList)
+    // console.log(newPlayerList)
     delete newPlayerList[playerID]
-    console.log(newPlayerList)
+    // console.log(newPlayerList)
     commit('setPlayerList', newPlayerList)
   }).catch(
     error =>{
@@ -278,8 +278,7 @@ export const claimPlayerInGroup = ({commit, state, dispatch}, payload) => {
             commit('setError', error)
             console.log(error)
           })
-    }).catch(
-      error =>{
+    }).catch(error =>{
         commit('setLoading', false)
         commit('setError', error)
         console.log(error)
@@ -328,8 +327,7 @@ export const replacePlayerInActiveGames = ({commit, state}, replaceData) => {
           commit('setError', error)
           console.log(error)
         })
-    }).catch(
-      error =>{
+    }).catch(error =>{
         commit('setLoading', false)
         commit('setError', error)
         console.log(error)
@@ -343,6 +341,34 @@ export const connectToGame = ({commit, state}, gameData) => {
     commit('setGame', {id: gameData.id})
 
   }
+
+  export const moveToEndStep = ({commit, state}) => {
+    commit('setLoading', true)
+    commit('clearError')
+    db.ref('games/' + state.gameInfo.id + '/status').set('ending')
+    .then(() => {
+      commit('setLoading', false)
+    }).catch(error =>{
+        commit('setLoading', false)
+        commit('setError', error)
+        console.log(error)
+    })
+  }
+
+  export const cancelEndStep = ({commit, state}) => {
+    commit('setLoading', true)
+    commit('clearError')
+    db.ref('games/' + state.gameInfo.id + '/status').set('active')
+    .then(() => {
+      commit('setLoading', false)
+    }).catch(error =>{
+        commit('setLoading', false)
+        commit('setError', error)
+        console.log(error)
+    })
+  }
+
+
 
 export const clearGame = ({commit}) => commit('clearGame')
 

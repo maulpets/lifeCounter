@@ -1,6 +1,15 @@
 <template>
-  <v-container pa-0>
-    <v-layout row py-2 align-content-center class="remote-player">
+  <v-container pa-0 style="position: relative;">
+    <v-layout pa-2 style="position: absolute; top: 0; bottom: 0; left: 0; right:0; background-color:rgba(0,0,0,.0); align-content: center; z-index: 20;" ref="buttons" @click="">
+      <v-spacer></v-spacer>
+        <v-btn flat style="opacity:.8;text-shadow: 0px 0px 7px #0000; ">select winner</v-btn>
+
+
+        <v-icon style="opacity:.8;text-shadow: 0px 0px 7px #0000, 0px 0px 2px #0000; " @click="test">grade</v-icon>
+        <!-- <img src="../../../assets/cmd.svg" width="20px"   /> -->
+        <!-- style="filter: blur(4px); background-color:rgba(0,0,0,.1);" -->
+      </v-layout>
+    <v-layout row py-2 align-content-center class="remote-player test" >
       <v-flex xs4 class="remote-player player-name">
         {{player.name}}
       </v-flex>
@@ -10,10 +19,10 @@
       </v-flex>
 
       <v-flex xs2>
-        <v-flex class="remote-player life-display" v-if="isEditting" @click="editLife">
+        <v-flex class="remote-player life-display test" v-if="isEditting" @click="editLife">
           {{player.life}}
         </v-flex>
-        <v-flex v-else class="remote-player life-input">
+        <v-flex v-else class="remote-player life-input test">
               <input type="number" name="" ref="lifetotal" v-model="player.life" @blur="saveHP(player)">                <!-- {{player.life}}</h1> -->
         </v-flex>
       </v-flex>
@@ -21,42 +30,49 @@
       <v-flex xs2>
         <v-icon small @click="subtract(player, 1)">remove</v-icon>
       </v-flex>
-
-
-      <v-flex xs2>
+<!-- v-show="(gameStatus === 'active')" -->
+      <v-flex xs2  >
         <v-icon style="opacity:.3;" @click="animate">security</v-icon>
         <!-- <img src="../../../assets/cmd.svg" width="20px"   /> -->
       </v-flex>
+<!-- v-show="(gameStatus === 'ending')" -->
+
+
     </v-layout>
-    <div :id="player['id']" class="drop-down" >
-        <commander-damage :opponents="player['cmd']" :life="player['life']" :id="player['id']" ref="cmdDmg"></commander-damage>
+    <div :id="'player' + player['id']" class="drop-down" >
+        <commander-damage :playerName="player['name']" :opponents="player['cmd']" :life="player['life']" :id="player['id']" ref="cmdDmg"></commander-damage>
     </div>
-        <v-divider light ></v-divider>
+        <v-divider light class="test" ></v-divider>
   </v-container>
 </template>
 
 <script>
+
+// require('../../../assets/particles/particles.js')
 import anime from 'animejs';
+// import Particles  from '../../../assets/particles/particles.js'
+
 import firebase from 'firebase'
 import {db} from '../../../firebase'
 import commanderDamage from './commanderDamage.vue'
 
 export default {
   name: 'game',
-  props: ['player'],
+  props: ['gameStatus','player'],
   components: {
     'commander-damage': commanderDamage
   },
   firebase: function () {
     return {
-      playerList:   db.ref('games/'+ this.$store.getters.loadedGame.id + '/players/')
+
     }
   },
   data: function () {
     return{
       gameID: '',
       isCollapsed: true,
-      isEditting: true
+      isEditting: true,
+
     }
   },
   computed: {
@@ -65,7 +81,22 @@ export default {
     }
   },
   watch: {
+    gameStatus: function(newValue, oldValue){
+        //
+        // this.$refs.buttons.$el.getBoundingClientRect()
+        const fade = newValue === 'active' ? 0 : 1
+      console.log('changed' + newValue + 'from' + oldValue)
+      anime({
+          targets: '.test',
+          duration: 1000,
+          delay: this.$refs.buttons.getBoundingClientRect().top * 2,
 
+
+          filterBlur: (fade * -4),
+          easing: 'easeInOutQuad'
+        })
+
+    }
   },
   methods: {
     editLife(){
@@ -85,25 +116,47 @@ export default {
       const newValue = player['life'] - amountToChange
       db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.id ).child('life').set(newValue)
     },
-    toggleCollapsation (){
-      this.isCollapsed = !this.isCollapsed
+    // toggleCollapsation (){
+    //   this.isCollapsed = !this.isCollapsed
+    // },
+   animate () {
+            const height = (this.isCollapsed ? this.$refs.cmdDmg.$el.clientHeight : 0) + 'px'
+            this.isCollapsed = !this.isCollapsed
+            const target = '#player' + this.player['id']
+
+            console.log("evetns")
+              anime({
+                  targets: target,
+                  duration: 550,
+                  maxHeight: height,
+                  easing: 'easeInOutQuad',
+
+                })
     },
-     animate () {
-              const height = (this.isCollapsed ? this.$refs.cmdDmg.$el.clientHeight : 0) + 'px'
-              this.isCollapsed = !this.isCollapsed
-              const target = '#' + this.player['id']
-                anime({
-                    targets: target,
-                    duration: 550,
-                    maxHeight: height,
-                    easing: 'easeInOutQuad'
-                  })
-        }
+    test (){
+
+    console.log( this.$refs.buttons.$el.getBoundingClientRect() )
+
+      anime({
+          targets: this.$refs.buttons.$el,
+          duration: 550,
+          opacity: 0,
+          easing: 'easeInOutQuad',
+          complete: function(anim) {
+                  console.log("finished")
+                }
+        })
+    }
+  },
+  mounted(){
+
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import '../../../assets/particles/particles.css';
+
 .remote-player{
     align-items: center;
     .player-name{

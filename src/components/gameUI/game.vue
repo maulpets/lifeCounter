@@ -12,12 +12,11 @@
         </v-flex>
       </v-layout>
       <v-divider light ></v-divider>
-      <v-layout row wrap v-for="player of playerList" v-bind:key="player['.key']"  class="player-card" >
+      <v-layout row wrap v-for="player of gameData.players" v-bind:key="player['.key']"  class="player-card" >
 
-        <remote-player :player="player"></remote-player>
+        <remote-player v-bind:gameStatus="gameData.status" v-bind:player="player"></remote-player>
       </v-layout>
     </v-container>
-
     <remote-menu></remote-menu>
   </div>
   </transition>
@@ -37,12 +36,15 @@ export default {
   },
   firebase: function () {
     return {
-      playerList:   db.ref('games/'+ this.$store.getters.loadedGame.id + '/players/')
+      gameData: {
+        source: db.ref('games/'+ this.$store.getters.loadedGame.id ),
+        asObject: true,
+      }
     }
   },
   data: function () {
     return{
-
+      endGame: false
     }
   },
   computed: {
@@ -52,6 +54,9 @@ export default {
     playGroupName(){
       return this.$store.getters.activePlayGroupName
     }
+  },
+  methods: {
+
   }
 }
 </script>

@@ -1,5 +1,7 @@
 export const loadedGame = state  => state.gameInfo
 
+export const gameInfo = state  => state.gameInfo
+
 export const user = state => state.user
 
 export const error = state => state.error
