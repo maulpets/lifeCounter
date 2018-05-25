@@ -14,10 +14,10 @@
       <v-divider light ></v-divider>
       <v-layout row wrap v-for="player of gameData.players" v-bind:key="player['.key']"  class="player-card" >
 
-        <remote-player v-bind:gameStatus="gameData.status" v-bind:player="player"></remote-player>
+        <remote-player v-bind:gameStatus="gameData.status" v-bind:winner="gameData['winner']" v-bind:player="player"></remote-player>
       </v-layout>
     </v-container>
-    <remote-menu></remote-menu>
+    <remote-menu v-bind:gameStatus="gameData.status" v-bind:winner="gameData['winner']" ></remote-menu>
   </div>
   </transition>
 </template>

@@ -1,28 +1,23 @@
 <template>
   <v-container pa-0 style="position: relative;">
-    <v-layout pa-2 style="position: absolute; top: 0; bottom: 0; left: 0; right:0; background-color:rgba(0,0,0,.0); align-content: center; z-index: 20;" ref="buttons" @click="">
-      <v-spacer></v-spacer>
-        <v-btn flat style="opacity:.8;text-shadow: 0px 0px 7px #0000; ">select winner</v-btn>
+    <div class="winner-select" ref="winnerSelect">
+      <winner-select  v-bind:gameWinner="winner" :thisID="player['id']" ></winner-select>
+    </div>
 
-
-        <v-icon style="opacity:.8;text-shadow: 0px 0px 7px #0000, 0px 0px 2px #0000; " @click="test">grade</v-icon>
-        <!-- <img src="../../../assets/cmd.svg" width="20px"   /> -->
-        <!-- style="filter: blur(4px); background-color:rgba(0,0,0,.1);" -->
-      </v-layout>
-    <v-layout row py-2 align-content-center class="remote-player test" >
+    <v-layout row py-2 align-content-center class="remote-player" ref="playerCard" >
       <v-flex xs4 class="remote-player player-name">
         {{player.name}}
-      </v-flex>
 
+      </v-flex>
       <v-flex xs2>
         <v-icon @click="add(player, 1)"> add</v-icon>
       </v-flex>
 
       <v-flex xs2>
-        <v-flex class="remote-player life-display test" v-if="isEditting" @click="editLife">
+        <v-flex class="remote-player life-display" v-show="isEditting" @click="editLife">
           {{player.life}}
         </v-flex>
-        <v-flex v-else class="remote-player life-input test">
+        <v-flex class="remote-player life-input"  v-show="!isEditting" >
               <input type="number" name="" ref="lifetotal" v-model="player.life" @blur="saveHP(player)">                <!-- {{player.life}}</h1> -->
         </v-flex>
       </v-flex>
@@ -42,7 +37,7 @@
     <div :id="'player' + player['id']" class="drop-down" >
         <commander-damage :playerName="player['name']" :opponents="player['cmd']" :life="player['life']" :id="player['id']" ref="cmdDmg"></commander-damage>
     </div>
-        <v-divider light class="test" ></v-divider>
+        <v-divider light ></v-divider>
   </v-container>
 </template>
 
@@ -52,21 +47,19 @@
 import anime from 'animejs';
 // import Particles  from '../../../assets/particles/particles.js'
 
+import commanderDamage from './commanderDamage.vue'
+import winnerSelect from './winnerSelect.vue'
 import firebase from 'firebase'
 import {db} from '../../../firebase'
-import commanderDamage from './commanderDamage.vue'
 
 export default {
   name: 'game',
-  props: ['gameStatus','player'],
+  props: ['gameStatus','player', 'winner'],
   components: {
-    'commander-damage': commanderDamage
+    'commander-damage': commanderDamage,
+    'winner-select': winnerSelect
   },
-  firebase: function () {
-    return {
 
-    }
-  },
   data: function () {
     return{
       gameID: '',
@@ -84,18 +77,38 @@ export default {
     gameStatus: function(newValue, oldValue){
         //
         // this.$refs.buttons.$el.getBoundingClientRect()
-        const fade = newValue === 'active' ? 0 : 1
-      console.log('changed' + newValue + 'from' + oldValue)
-      anime({
-          targets: '.test',
-          duration: 1000,
-          delay: this.$refs.buttons.getBoundingClientRect().top * 2,
+      const fade = newValue === 'active' ? 0 : 1
 
 
-          filterBlur: (fade * -4),
-          easing: 'easeInOutQuad'
-        })
+      if(newValue === 'ending'){
+        this.isCollapsed = true
+        const target = '#player' + this.player['id']
+        anime({
+            targets: target,
+            duration: 550,
+            maxHeight: 0,
+            easing: 'easeInOutQuad',
+          })
+    }
 
+
+
+      const target = this.$refs.winnerSelect
+
+      this.$refs.playerCard.classList.toggle('voting')
+      this.$refs.winnerSelect.classList.toggle('voting')
+      const animation = anime({
+          targets: target,
+          duration: 800,
+          delay: this.$refs.winnerSelect.getBoundingClientRect().top * 4 * fade,
+          opacity: fade,
+          translateX: fade * 4,
+          easing: 'easeInOutQuad',
+          complete: function(anim){
+
+          }
+
+      })
     }
   },
   methods: {
@@ -104,7 +117,7 @@ export default {
       this.$nextTick(() => this.$refs.lifetotal.focus())
     },
     saveHP (player) {
-      console.log(player.life)
+        console.log(player.life)
         db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.id ).child('life').set(player.life)
         this.isEditting = !this.isEditting
     },
@@ -123,30 +136,27 @@ export default {
             const height = (this.isCollapsed ? this.$refs.cmdDmg.$el.clientHeight : 0) + 'px'
             this.isCollapsed = !this.isCollapsed
             const target = '#player' + this.player['id']
-
-            console.log("evetns")
-              anime({
-                  targets: target,
-                  duration: 550,
-                  maxHeight: height,
-                  easing: 'easeInOutQuad',
-
-                })
+            anime({
+                targets: target,
+                duration: 550,
+                maxHeight: height,
+                easing: 'easeInOutQuad',
+              })
     },
-    test (){
+    // test (){
 
-    console.log( this.$refs.buttons.$el.getBoundingClientRect() )
-
-      anime({
-          targets: this.$refs.buttons.$el,
-          duration: 550,
-          opacity: 0,
-          easing: 'easeInOutQuad',
-          complete: function(anim) {
-                  console.log("finished")
-                }
-        })
-    }
+    // console.log( this.$refs.buttons.$el.getBoundingClientRect() )
+    //
+    //   anime({
+    //       targets: this.$refs.buttons.$el,
+    //       duration: 550,
+    //       opacity: 0,
+    //       easing: 'easeInOutQuad',
+    //       complete: function(anim) {
+    //               console.log("finished")
+    //             }
+    //     })
+    // }
   },
   mounted(){
 
@@ -157,8 +167,24 @@ export default {
 <style scoped lang="scss">
 @import '../../../assets/particles/particles.css';
 
+.winner-select{
+  position: absolute;
+  height:100%;
+  width:100%;
+  opacity: 0;
+  z-index: -1;
+  &.voting{
+      z-index: 100;
+  }
+}
+
 .remote-player{
     align-items: center;
+    transition: all 500ms ease-in-out;
+    opacity: 1;
+    &.voting{
+      opacity: .1
+    }
     .player-name{
       text-align: left;
       font-size: 2em;

@@ -1,5 +1,4 @@
 <template>
-  <transition name="slide-in" mode="in-out">
   <v-container pa-3  style="position:relative">
     <v-layout row wrap justify-space-around>
       <v-flex xs4 v-if="!(playerName === opponent)" v-for="(damageTaken, opponent) in opponents" @click="add(damageTaken, opponent, 1)" class="commander-beats" :key="opponent" pa-3>
@@ -9,8 +8,7 @@
       <v-icon style="position:absolute; left:5px; bottom:5px; opacity:.1" @click="resetCMD">refresh</v-icon>
     </v-layout>
   </v-container>
-  </transition>
-  </template>
+</template>
 <script>
 import firebase from 'firebase'
 import {db} from '../../../firebase'

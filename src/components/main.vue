@@ -121,9 +121,9 @@ export default {
     }
   },
   mounted(){
-          this.$store.dispatch('clearGame')
-          this.$store.dispatch('clearActivePlayGroup')
-          this.$store.dispatch('clearActivePlayGroupName')
+          // this.$store.dispatch('clearGame')
+          // this.$store.dispatch('clearActivePlayGroup')
+          // this.$store.dispatch('clearActivePlayGroupName')
         }
 
 
