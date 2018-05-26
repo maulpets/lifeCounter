@@ -108,7 +108,7 @@ export default {
   },
   methods: {
     startGame: function() {
-      this.$store.dispatch('createGame')
+      // this.$store.dispatch('createGame')
     },
     createPlayGroup: function(){
       this.$store.dispatch('createPlayGroup')

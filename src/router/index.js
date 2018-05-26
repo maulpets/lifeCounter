@@ -17,11 +17,11 @@ import join from '@/components/join'
 
 import play from '@/components/play'
 
-import game from '@/components/gameUI/game'
+import remote from '@/components/gameUI/remote'
 
 
 import scoreboard from '@/components/scoreboard'
-import remote from '@/components/remote'
+
 
 
 import AuthGaurd from './AuthGaurd'
@@ -67,11 +67,11 @@ Vue.use(Router)
       name: 'play',
       component: play
     },
-    {
-      path: '/game',
-      name: 'game',
-      component: game
-    },
+    // {
+    //   path: '/game',
+    //   name: 'game',
+    //   component: game
+    // },
     {
       path: '/newGame',
       name: 'newGame',

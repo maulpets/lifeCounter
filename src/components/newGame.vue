@@ -103,59 +103,21 @@ export default {
   },
   methods: {
     startGame(){
+      const config ={
+        startingLifeTotal: this.isSelected,
+        selectedPlayers: this.activePlayers
+      }
 
-      const updates = { }
-      const selectedPlayers = [ ]
-      const playerSetup = { }
-      const setValues = { }
+      this.$store.dispatch('startGame', config)
 
-      this.activePlayers.forEach((key) => {
-      setValues[this.playerList[key].name] = 0
-      selectedPlayers.push(this.playerList[key].name)
-      })
-
-      this.activePlayers.forEach((key) => {
-          updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/players/' + this.playerList[key].id ] =
-          {
-            name: this.playerList[key].name,
-            id: this.playerList[key].id,
-          }
-
-          updates['/playgroups/' + this.activePlayGroup + '/playerList/' + this.playerList[key].id + '/isPlaying' ] = this.gameID
-
-
-          updates['/games/' + this.gameID + '/players/' + this.playerList[key].id ] =
-          {
-            name: this.playerList[key].name,
-            id: this.playerList[key].id,
-            life: this.isSelected,
-            cmd: setValues
-          }
-
-          if(!this.playerList[key].temp)
-            updates['/users/'+ this.playerList[key].id + '/activeGames/' + this.gameID ] = {
-              id: this.gameID,
-              playgroup: this.activePlayGroup,
-              playgroupName: this.activePlayGroupName,
-              players: selectedPlayers
-            }
-      })
-
-      updates['/games/' + this.gameID + '/playgroup' ] = this.activePlayGroup
-      updates['/games/' + this.gameID + '/status' ] = 'active'
-      updates['/playgroups/' + this.activePlayGroup + '/status'] = 'playing'
-      updates['/playgroups/' + this.activePlayGroup + '/activeGames/' + this.gameID + '/id'] = this.gameID
-
-      return db.ref().update(updates)
-      .then().catch(
-        error => {
-
-        console.log(error)
-      })
     },
     clearGame(){
         //remove game from games database on exit IF status = setup
     }
+  },
+  mounted(){
+    const isNewGame = true
+    this.$store.dispatch('createGame', isNewGame)
   }
 }
 </script>

@@ -5,7 +5,9 @@ export const setGame = (state, newGameInfo) => {
   state.gameInfo = Object.assign({}, newGameInfo)
 }
 
-
+export const updateGameStatus = (state, newStatus) => {
+  state.gameInfo = Object.assign({id: state.gameInfo.id}, newStatus)
+}
 
 export const setUser = (state, userInfo) => {
   state.user = userInfo

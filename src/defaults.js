@@ -1,6 +1,6 @@
 export const gameDefaults = {
               status: "setup",
-              winner: '',
+              winner: "",
             }
 
             //adding new users to system

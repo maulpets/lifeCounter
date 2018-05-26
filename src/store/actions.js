@@ -6,9 +6,7 @@ import {userDefaults} from '../defaults'
 import {playerDefaults} from '../defaults'
 
 
-export const changeGame = ({commit}, newGameInfo) => {
-  commit('setGame', newGameInfo)
-}
+//USER ACCOUNT STUFF
 
 
 export const signUpUser = ({commit}, newUserInfo) => {
@@ -72,24 +70,11 @@ export const loginUser = ({commit}, loginUserInfo ) => {
       })
 }
 
-export const createGame = ({commit}) => {
-  commit('setLoading', true)
-  commit('clearError')
 
-  const newGameID = Math.random().toString(36).substr(2, 5);
-  const gameInfo = {id: newGameID }
-  db.ref('games/' + newGameID ).set(gameDefaults)
-    .then(() => {
-      commit('setLoading', false)
-      commit('setGame', gameInfo)
-      commit('clearPlayerList')
-    }).catch(
-      error =>{
-        commit('setLoading', false)
-        commit('setError', error)
-        console.log(error)
-      })
-}
+
+
+
+//PLAYGROUP STUFF
 
 export const createPlayGroup = ({commit, state, dispatch}) => {
   commit('setLoading', true)
@@ -200,6 +185,24 @@ export const loadPlayGroup = ({commit}, newActivePlayGroup) => {
       })
 }
 
+export const loadActivePlayGroupPlayers = ({commit, state}) => {
+  commit('setLoading', true)
+  commit('clearError')
+
+  db.ref('playgroups/'+ state.activePlayGroup).once('value')
+    .then((playgroup) => {
+
+      const newPlayerList = playgroup.val().playerList
+
+      commit('setPlayerList', newPlayerList)
+      commit('setLoading', false)
+    }).catch(
+      error =>{
+        commit('setLoading', false)
+        commit('setError', error)
+        console.log(error)
+      })
+}
 
 
 export const joinPlayGroup = ({commit, state, dispatch}, config) => {
@@ -342,20 +345,138 @@ export const replacePlayerInActiveGames = ({commit, state}, replaceData) => {
       })
     }
 
+
+    //GAME STUFF
+
+  export const createGame = ({commit, dispatch}, isNewGame) => {
+    commit('setLoading', true)
+    commit('clearError')
+
+    if(isNewGame){
+      dispatch('clearActivePlayGroup')
+      dispatch('clearActivePlayGroupName')
+      dispatch('clearPlayerList')
+    }
+
+    dispatch('clearGame')
+
+    const newGameID = Math.random().toString(36).substr(2, 5);
+    const gameInfo = {
+                ...gameDefaults,
+                id: newGameID
+              }
+
+    db.ref('games/' + newGameID ).set(gameDefaults)
+      .then(() => {
+        commit('setLoading', false)
+        commit('setGame', gameInfo)
+      }).catch(
+        error =>{
+          commit('setLoading', false)
+          commit('setError', error)
+          console.log(error)
+        })
+  }
+
+
+
+export const startGame = ({commit, state, dispatch}, gameConfig ) => {
+  commit('setLoading', true)
+  commit('clearError')
+
+  const updates = { }
+  const startingLifeTotal = gameConfig.startingLifeTotal
+  const selectedPlayers = gameConfig.selectedPlayers
+
+
+  selectedPlayers.forEach((playerID) => {
+    //used to store list of player names in user data.
+    //so we can display the list of player names before you join the game
+    // **** THINK ABOUT REMOVING THIS
+    let playersNames = [ ]
+
+    //value of Commander Damage taken.
+    let setCommanderDamage = { }
+
+    selectedPlayers.forEach((key) => {
+      //array of all players names
+      // console.log(state.playerList[key].name)
+      playersNames.push(state.playerList[key].name)
+
+      //object array, {PLAYERNAME : 00 (Amount of CMD DAMAGE)} only need values for opponents
+      playerID === key ?  console.log(" ") : (setCommanderDamage[state.playerList[key].name] = 0)
+    })
+
+
+    //adds this player to the active games list in the play group
+    updates['/playgroups/' + state.activePlayGroup + '/activeGames/' + state.gameInfo.id + '/players/' + state.playerList[playerID].id ] = state.playerList[playerID].name
+
+    //flags this player in the playgroup as playing =  this is used when trying to claim a player in a playgroup
+    updates['/playgroups/' + state.activePlayGroup + '/playerList/' + state.playerList[playerID].id + '/isPlaying' ] = state.gameInfo.id
+
+    //add player to the game
+    updates['/games/' + state.gameInfo.id + '/players/' + state.playerList[playerID].id ] =
+    {
+      name: state.playerList[playerID].name,
+      id: state.playerList[playerID].id,
+      life: startingLifeTotal,
+      cmd: setCommanderDamage
+    }
+    //if the player is a user add this game data to there account info for quick joining
+    if(!state.playerList[playerID].temp)
+      updates['/users/'+ state.playerList[playerID].id + '/activeGames/' +  state.gameInfo.id ] = {
+        id: state.gameInfo.id,
+        playgroup: state.activePlayGroup,
+        playgroupName: state.activePlayGroupName,
+        players: playersNames
+      }
+    })  //end of player loop
+
+    //add playgroup id to active game
+    updates['/games/' +  state.gameInfo.id + '/playgroup' ] = state.activePlayGroup
+    //change status from setup to active
+    updates['/games/' +  state.gameInfo.id + '/status' ] = 'active'
+    //store staring life total  (could be game mode)
+    updates['/games/' +  state.gameInfo.id + '/startingLife' ] = startingLifeTotal
+    //set flag on playgroup that there is an active game
+    updates['/playgroups/' + state.activePlayGroup + '/status'] = 'playing'
+    //adds game id to feild in playgroups / activegmaes/
+    updates['/playgroups/' + state.activePlayGroup + '/activeGames/' +  state.gameInfo.id + '/id'] =  state.gameInfo.id
+
+    //commit changes to database
+    return db.ref().update(updates)
+    .then(() => {
+      commit('setLoading', false)
+      dispatch('updateGameStatus', 'active')
+    }).catch(
+      error =>{
+        commit('setLoading', false)
+        commit('setError', error)
+        console.log(error)
+      })
+}
+
+
+  export const changeGame = ({commit}, newGameInfo) => {
+    commit('setGame', newGameInfo)
+  }
+
+
 export const connectToGame = ({commit, state}, gameData) => {
 
     commit('setActivePlayGroup', gameData.playgroup)
     commit('setActivePlayGroupName', gameData.playgroupName)
-    commit('setGame', {id: gameData.id})
+    commit('setGame', {id: gameData.id, status: 'active'})
 
   }
 
-  export const moveToEndStep = ({commit, state}) => {
+  export const moveToEndStep = ({commit, state, dispatch}) => {
     commit('setLoading', true)
     commit('clearError')
     db.ref('games/' + state.gameInfo.id + '/status').set('ending')
     .then(() => {
       commit('setLoading', false)
+      dispatch('updateGameStatus', 'ending')
     }).catch(error =>{
         commit('setLoading', false)
         commit('setError', error)
@@ -363,7 +484,7 @@ export const connectToGame = ({commit, state}, gameData) => {
     })
   }
 
-  export const cancelEndStep = ({commit, state}) => {
+  export const cancelEndStep = ({commit, state, dispatch}) => {
     commit('setLoading', true)
     commit('clearError')
     const updates = { }
@@ -371,7 +492,10 @@ export const connectToGame = ({commit, state}, gameData) => {
     updates['games/' + state.gameInfo.id + '/winner'] = ''
 
       return db.ref().update(updates)
-      .then( commit('setLoading', false))
+      .then(() => {
+        dispatch('updateGameStatus', 'ending')
+        commit('setLoading', false)
+      })
       .catch(error => {
         commit('setLoading', false)
         console.log(error)
@@ -391,7 +515,7 @@ export const connectToGame = ({commit, state}, gameData) => {
     })
   }
 
-  export const closeGame = ({commit, state}, winnerID) => {
+  export const closeGame = ({commit, state, dispatch }, winnerID) => {
     commit('setLoading', true)
     commit('clearError')
     const updates = { }
@@ -403,7 +527,8 @@ export const connectToGame = ({commit, state}, gameData) => {
     .then((gameData) => {
 
       //archive game in completedGames
-      updates['/completedGames/' + state.gameInfo.id ] = gameData.val()
+      updates['completedGames/' + state.gameInfo.id ] = gameData.val()
+
 
       // completedGameData['players'] = gameData.val().players
       // completedGameData['playgroup'] = gameData.val().playgroup
@@ -442,23 +567,29 @@ export const connectToGame = ({commit, state}, gameData) => {
             //console.log("is temp player")
 
           } else {
+
             //let history = playGroupData.val().playerList[player].gameHistory !== '' ? (playGroupData.val().playerList[player].gameHistory + ',' + state.gameInfo.id) : state.gameInfo.id
             // console.log(history)
+
             //store game history in users info
             updates['users/' + player + '/gameHistory/' + state.gameInfo.id ] = state.gameInfo.id
             //remove active game from users list
-            db.ref('users/' + player + '/activeGames/' + state.gameInfo.id).remove()
+            updates['users/' + player + '/activeGames/' + state.gameInfo.id] = null
           }
         })
+
+        //remove active game from playgroup and games list
+        updates['playgroups/' +  state.activePlayGroup + '/activeGames/' + state.gameInfo.id] = null
+        updates['games/' + state.gameInfo.id] = null
 
         // send updates to server
         return db.ref().update(updates)
         .then(() => {
+          db.ref('completedGames/' + state.gameInfo.id + '/status/').set('closed')
           commit('setLoading', false)
+          console.log("game data recorded")
+          dispatch('updateGameStatus', 'closed')
 
-          //remove active game from playgroup and games list
-          db.ref('playgroups/' +  state.activePlayGroup + '/activeGames/' + state.gameInfo.id).remove()
-          db.ref('games/' + state.gameInfo.id).remove()
         }).catch(error => {
           commit('setLoading', false)
           console.log(error)
@@ -478,10 +609,12 @@ export const connectToGame = ({commit, state}, gameData) => {
         console.log(error)
     })
 
-
   }
 
 
+
+
+export const updateGameStatus = ({commit}, newStatus) => commit('updateGameStatus', {status: newStatus})
 
 export const clearGame = ({commit}) => commit('clearGame')
 

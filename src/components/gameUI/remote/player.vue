@@ -6,8 +6,8 @@
 
     <v-layout row py-2 align-content-center class="remote-player" ref="playerCard" >
       <v-flex xs4 class="remote-player player-name">
-        {{player.name}}
 
+        {{player.name}}
       </v-flex>
       <v-flex xs2>
         <v-icon @click="add(player, 1)"> add</v-icon>
@@ -125,7 +125,7 @@ export default {
       const newValue = player['life'] + amountToChange
       db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.id ).child('life').set(newValue)
     },
-    subtract (player, amountToChange, valueToChange){
+    subtract (player, amountToChange){
       const newValue = player['life'] - amountToChange
       db.ref('games/'+ this.$store.state.gameInfo.id + '/players/' + player.id ).child('life').set(newValue)
     },

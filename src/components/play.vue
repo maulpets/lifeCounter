@@ -7,10 +7,10 @@
           <h1>game id: {{loadedGame.id}}</h1>
         </v-flex>
         <v-flex xs6>
-          <router-link class="back-button" to="/game"><v-btn>remote</v-btn></router-link>
+          <router-link class="back-button" to="/remote"><v-btn>remote</v-btn></router-link>
         </v-flex>
         <v-flex xs6>
-          <router-link class="create-group" to="/game"><v-btn> scoreboard </v-btn></router-link>
+          <router-link class="create-group" to="/remote"><v-btn> scoreboard </v-btn></router-link>
         </v-flex>
       </v-layout>
     </v-container>
@@ -41,6 +41,9 @@ export default {
     // onConnect () {
     //   this.$store.dispatch('changeGame', {id: this.gameID});
     // }
+  },
+  mounted(){
+    this.$store.dispatch('loadActivePlayGroupPlayers')
   }
 }
 </script>
