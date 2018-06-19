@@ -37,7 +37,7 @@
     <div :id="'player' + player['id']" class="drop-down" >
         <commander-damage :playerName="player['name']" :opponents="player['cmd']" :life="player['life']" :id="player['id']" ref="cmdDmg"></commander-damage>
     </div>
-        <v-divider light ></v-divider>
+    <v-divider light ></v-divider>
   </v-container>
 </template>
 

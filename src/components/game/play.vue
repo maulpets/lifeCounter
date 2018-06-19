@@ -10,7 +10,7 @@
           <router-link class="back-button" to="/remote"><v-btn>remote</v-btn></router-link>
         </v-flex>
         <v-flex xs6>
-          <router-link class="create-group" to="/remote"><v-btn> scoreboard </v-btn></router-link>
+          <router-link class="create-group" to="/scoreboard"><v-btn> scoreboard </v-btn></router-link>
         </v-flex>
       </v-layout>
     </v-container>

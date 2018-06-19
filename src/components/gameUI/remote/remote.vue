@@ -1,6 +1,7 @@
 <template>
   <transition name="fade-in" mode="out-in">
   <div class="remote-page-wrapper">
+
     <v-container pa-2 class="remote-page remote-player-list">
       <v-layout row class="remote-page remote-header" py-2>
         <v-flex class="remote-header header-game-id">
@@ -13,19 +14,21 @@
       </v-layout>
       <v-divider light ></v-divider>
       <v-layout row wrap v-for="player of gameData.players" v-bind:key="player['.key']"  class="player-card" >
-
         <remote-player v-bind:gameStatus="gameData.status" v-bind:winner="gameData.winner" v-bind:player="player"></remote-player>
       </v-layout>
     </v-container>
-    <remote-menu v-bind:gameData="gameData" ></remote-menu>
+
+    <div class="menu">
+      <remote-menu v-bind:gameData="gameData" ></remote-menu>
+    </div>
   </div>
   </transition>
 </template>
 
 <script>
 import firebase from 'firebase'
-import {db} from '../../firebase'
-import remotePlayerComponent from './remote/player.vue'
+import {db} from '../../../firebase'
+import remotePlayerComponent from './player.vue'
 import remoteMenu from './remoteMenu.vue'
 export default {
   name: 'game',
@@ -63,8 +66,10 @@ export default {
   watch:{
     gameStatus:  function(newValue, oldValue){
       console.log(newValue)
+      //watch status to repull game data when new game is started
       newValue === 'active' ? this.$bindAsObject('gameData', db.ref('games/'+ this.$store.getters.loadedGame.id )) : false
-    }
+    },
+
   },
   methods: {
   },
@@ -102,6 +107,14 @@ export default {
       position: relative;
       overflow-y: scroll;
   }
+.menu{
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 }
 .fade-in-enter-active {
   animation: fade-in ease-in-out 1.5s ;

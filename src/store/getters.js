@@ -16,6 +16,10 @@ export const activePlayGroup = state => state.activePlayGroup
 
 export const activePlayGroupName = state => state.activePlayGroupName
 
+export const isSearching = state => state.searchStatus
+
+export const searchingForID = state => state.searchedGroupID
+
 // error: (state) => {return state.error},
 // loading: (state) => {return state.loading},
 // playgroups: (state) => {return state.playgroups},

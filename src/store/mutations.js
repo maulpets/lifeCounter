@@ -56,6 +56,15 @@ export const clearGame = (state) => {
   state.gameInfo = Object.assign({}, {id: null})
 }
 
+export const setIsSearching = (state, groupID) => {
+  state.searchStatus = true
+  state.searchedGroupID = groupID
+  console.log(groupID)
+}
+
+export const setNotSearching = (state) => {
+  state.searchStatus = false
+}
 
 export const clearError = (state) => {
   state.error = null

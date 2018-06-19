@@ -37,18 +37,23 @@
         <v-container class="title-menu" >
 
           <v-layout row wrap  class="user-playgroup-menu">
-            <v-flex xs12 class="user-create-game user-option">
-              <router-link to="/newGame"  v-on:click.native="startGame">create game</router-link>
-            </v-flex>
 
-            <v-flex xs12 class="create-playgroup user-option">
+
+            <!-- <v-flex xs12 class="create-playgroup user-option">
               <router-link to="/newPlayGroup"  v-on:click.native="createPlayGroup">create play group</router-link>
             </v-flex>
             <v-flex xs12 class="join-playgroup user-option">
+              <v-btn @click="loadAllPlayGroups">test</v-btn>
               <router-link to="/joinPlayGroup">join play group</router-link>
+            </v-flex> -->
+            <v-flex xs12 class="join-playgroup user-option">
+              <router-link to="/playgroups">playgroups</router-link>
             </v-flex>
+            <!-- <v-flex xs12 class="user-create-game user-option">
+              <router-link to="/newGame"  v-on:click.native="startGame">create game</router-link>
+            </v-flex> -->
             <v-flex xs12 class="join-game user-option">
-              <router-link to="/join">join game</router-link>
+              <router-link to="/manageGames">games</router-link>
             </v-flex>
 
 
@@ -70,6 +75,7 @@ import {db} from '../firebase'
 import {gameDefaults} from '../defaults'
 
 
+
 export default {
   name: 'splashscreen',
   components: {
@@ -84,11 +90,6 @@ export default {
   data: function(){
     return {
       gameID: '',
-      // dropdown_icon: [
-      //     { text: 'create new playgroup', callback: () => this.createPlayGroup() },
-      //     { text: 'favorite', callback: () => console.log('favorite') },
-      //     { text: 'delete', callback: () => console.log('delete') }
-      //   ]
      }
   },
   computed: {
@@ -100,6 +101,13 @@ export default {
     }
   },
   watch: {
+//CHANGE FIREBASE TO BIND TO OBJ THEN WATCH OBJECT
+    playgroupData: {
+      handler:  function(newValue, oldValue){
+        console.log("test")
+      },
+      deep: true
+    }
     // hasPlayGroup (value){
     //   if (value){
     //     this.$router.push('/newPlayGroup')
@@ -115,16 +123,26 @@ export default {
         .then( this.$router.push('/newPlayGroup') )
 
     },
-    connectToGame: function(gameData){
-      console.log(gameData)
-      this.$store.dispatch('connectToGame', gameData)
+    loadAllPlayGroups: function(){
+      const myPlayGroups = this.playgroupData
+      delete myPlayGroups['.key']
+      console.log(myPlayGroups)
+      this.$store.dispatch('allPlayGroups', myPlayGroups)
+
     }
+
+    // connectToGame: function(gameData){
+    //   console.log(gameData)
+    //   this.$store.dispatch('connectToGame', gameData)
+    // }
   },
   mounted(){
+
+    this.$bindAsObject('playgroupData', db.ref('users/'+ firebase.auth().currentUser.uid + '/playgroups/'))
           // this.$store.dispatch('clearGame')
           // this.$store.dispatch('clearActivePlayGroup')
           // this.$store.dispatch('clearActivePlayGroupName')
-        }
+  }
 
 
 

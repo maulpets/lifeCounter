@@ -75,6 +75,9 @@ export const loginUser = ({commit}, loginUserInfo ) => {
 
 
 //PLAYGROUP STUFF
+export const setIsSearching = ({commit}, searchedGroupID) =>  commit('setIsSearching', searchedGroupID)
+
+export const setNotSearching = ({commit}) =>  commit('setNotSearching')
 
 export const createPlayGroup = ({commit, state, dispatch}) => {
   commit('setLoading', true)
@@ -161,6 +164,13 @@ export const removePlayerFromGroup = ({commit, state}, playerID) => {
       console.log(error)
     })
 }
+
+export const allPlayGroups = ({commit}, payload) => {
+  console.log(payload)
+    commit('setPlaygroups', payload )
+
+}
+
 
 export const loadPlayGroup = ({commit}, newActivePlayGroup) => {
   commit('setLoading', true)

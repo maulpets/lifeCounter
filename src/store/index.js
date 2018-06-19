@@ -29,6 +29,8 @@ const state = {
     playgroups: null,
     playerList: { },
     gameHistory: null,
+    searchStatus: false,
+    searchedGroupID: '',
 
   }
 

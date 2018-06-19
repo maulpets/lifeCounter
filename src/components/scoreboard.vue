@@ -1,23 +1,23 @@
 <template>
   <transition name="fade-in">
   <div class="scoreboard">
-    <div class="title-bar">
+    <!-- <div class="title-bar">
       <h2>Game ID: <span id="gameID">{{gameInfo.id}}</span></h2>
-    </div>
+    </div> -->
 
     <div class="player-card-wrapper">
       <div class="player-card" v-for="player of playerList" :key="player.name" >
         <div class="player-name"> {{player.name}}</div>
 
         <div class="life-counter">
-          <div class="left-side-button" @click="add(player, 1, 'life')"></div>
-          <div class="left-floating-button" @click="add(player, 5, 'life')"> <v-icon>add</v-icon> </div>
+          <!-- <div class="left-side-button" @click="add(player, 1, 'life')"></div>
+          <div class="left-floating-button" @click="add(player, 5, 'life')"> <v-icon>add</v-icon> </div> -->
           <div class="life-total"> {{player.life}} </div>
-          <div class="right-floating-button" @click="subtract(player, 5, 'life')"> <v-icon>remove</v-icon> </div>
-          <div class="right-side-button" @click="subtract(player, 1, 'life')"></div>
+          <!-- <div class="right-floating-button" @click="subtract(player, 5, 'life')"> <v-icon>remove</v-icon> </div>
+          <div class="right-side-button" @click="subtract(player, 1, 'life')"></div> -->
         </div>
 
-        <div class="side-counter-wrapper">
+        <!-- <div class="side-counter-wrapper">
           <div class="side-counter" v-bind:class="{ 'is-counting': isCounting(player, 'sideCounter1') }">
             <div class="" @click="add(player, 1,'sideCounter1')" ><v-icon>add</v-icon></div>
             <p>{{player.sideCounter1}}</p>
@@ -33,7 +33,7 @@
              <p>{{player.sideCounter3}}</p>
             <div class="" @click="subtract(player, 1,'sideCounter3')"><v-icon>remove</v-icon></div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -63,7 +63,7 @@ export default {
   },
   firebase: function () {
     return {
-      playerList:   db.ref('games/'+ this.$store.state.gameInfo.id + '/playerList/')
+      playerList:   db.ref('games/'+ this.$store.state.gameInfo.id + '/players/')
     }
   },
   computed: {

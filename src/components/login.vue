@@ -10,7 +10,7 @@
 
     <v-container>
       <v-layout row wrap class="sign-in-form-wrapper">
-        <v-flex xs8 offset-xs2  >
+        <v-flex xs12   >
           <h1>username</h1>
           <v-form action="index.html" method="post" @submit.prevent="onLogin">
           <v-text-field

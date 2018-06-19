@@ -1,5 +1,8 @@
 <template>
       <div id="app">
+        <div class="overlay">
+          <h5>_tlc-0.3</h5>
+        </div>
         <v-app dark>
           <router-view></router-view>
         </v-app>
@@ -22,7 +25,16 @@ export default {
   width: 100vw;
   background-color: #373b41;
 }
-
+.overlay{
+  position: absolute;
+      font-family: Roboto,sans-serif;
+      text-align: left;
+      opacity: .3;
+      color: white;
+      letter-spacing: 1px;
+      font-weight: 100;
+      bottom: 0;
+}
 
 a {
   text-decoration: none;

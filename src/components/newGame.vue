@@ -32,7 +32,7 @@
 
       <!-- <v-flexv-for="option in playerCountOptions" v-bind:class="{ 'is-selected': playerCount(option) }" v-on:click="addPlayers(option)"> -->
       <v-flex v-for="option in playerCountOptions" :key="option" ma-2>
-        <v-btn :flat="!(isSelected === option)" @click="isSelected = option">{{option}}</v-btn>
+        <v-btn :flat="!(isSelected === option)"  @click="isSelected = option">{{option}}</v-btn>
       </v-flex>
 
     </v-layout>
@@ -42,7 +42,7 @@
         <router-link class="back-button" to="/main" v-on:click.native="clearGame"><v-btn flat>back</v-btn></router-link>
       </v-flex>
       <v-flex xs6>
-        <router-link class="create-group" to="/play"  v-on:click.native="startGame"> <v-btn :disabled="false" > play </v-btn></router-link>
+        <router-link class="create-group" to="/play"  v-on:click.native="startGame"> <v-btn color="primary" > play </v-btn></router-link>
       </v-flex>
     </v-layout>
 

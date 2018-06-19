@@ -7,21 +7,19 @@ import splashscreen from '@/components/splash'
 import signup from '@/components/signup'
 import login from '@/components/login'
 
+
 import main from '@/components/main'
 
-import newPlayGroup from '@/components/newPlayGroup'
-import joinPlayGroup from '@/components/joinPlayGroup'
+
+
+import playgroups from '@/components/playgroups/manageGroups'
+import manageGames from '@/components/game/manageGames'
 
 import newGame from '@/components/newGame'
-import join from '@/components/join'
+import play from '@/components/game/play'
 
-import play from '@/components/play'
-
-import remote from '@/components/gameUI/remote'
-
-
+import remote from '@/components/gameUI/remote/remote'
 import scoreboard from '@/components/scoreboard'
-
 
 
 import AuthGaurd from './AuthGaurd'
@@ -29,7 +27,7 @@ import AuthGaurd from './AuthGaurd'
 Vue.use(Router)
 
  const router = new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -53,34 +51,24 @@ Vue.use(Router)
       beforeEnter: AuthGaurd
     },
     {
-      path: '/newPlayGroup',
-      name: 'newPlayGroup',
-      component: newPlayGroup
+      path: '/playgroups',
+      name: 'playgroups',
+      component: playgroups
     },
     {
-      path: '/joinPlayGroup',
-      name: 'joinPlayGroup',
-      component: joinPlayGroup
+      path: '/manageGames',
+      name: 'manageGames',
+      component: manageGames
     },
     {
       path: '/play',
       name: 'play',
       component: play
     },
-    // {
-    //   path: '/game',
-    //   name: 'game',
-    //   component: game
-    // },
     {
       path: '/newGame',
       name: 'newGame',
       component: newGame
-    },
-    {
-      path: '/join',
-      name: 'join',
-      component: join
     },
     {
       path: '/scoreboard',
